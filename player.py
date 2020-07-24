@@ -1,13 +1,22 @@
+
+from __future__ import unicode_literals
+import youtube_dl
 from sputofy import Ui_MainWindow
 import sys, os, random
 
+from mutagen.mp3 import MP3
+import datetime
+from pytube import YouTube
+from moviepy.editor import *
+
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QStyle
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaPlaylist
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaPlaylist, QMediaPlayerControl
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtCore import Qt, QUrl, QTimer
+
 
 
 
@@ -65,15 +74,42 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mediaPlayer.stateChanged.connect(self.mediastate_changed)
         self.mediaPlayer.positionChanged.connect(self.position_changed)
         self.mediaPlayer.durationChanged.connect(self.duration_changed)
-        # self.volumeSlider.valueChanged.connect(self.mediaPlayer.setVolume)
+        self.mediaPlayer.durationChanged.connect(self.printa)#TODO
         self.volumeSlider.valueChanged.connect(self.setVolume)   
 
-        self.mediaPlayer.durationChanged.connect(self.update_duration)
         self.mediaPlayer.positionChanged.connect(self.update_time_remaining)
         self.durationSlider.valueChanged.connect(self.mediaPlayer.setPosition) 
 
-    
+       
         
+        
+        # yt = YouTube('https://youtu.be/JdZ3ZuP8-eM')
+        # yt = yt.get('mp4', '720p')
+        # yt.download('E:\\Download')
+        
+        # mp3 = yt.streams.filter().first()
+        # print(mp3.title)
+        # mp3.download("E:\\Download")
+
+        # video = VideoFileClip(os.path.join("E:\\Download",f"{mp3.title}.mp4"))
+        # video.audio.write_audiofile(os.path.join("E:\\Download", f"{mp3.title}.mp3"))
+
+        # video = VideoFileClip(os.path.join("E:\\Download","Nightcore - Centuries.mp4"))
+        # video.audio.write_audiofile(os.path.join("E:\\Download", "Nightcore - Centuries.mp3"))
+
+
+        
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download(['https://youtu.be/JdZ3ZuP8-eM'])
+
         
         
         
@@ -85,10 +121,28 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.loopBtn.clicked.connect(self.loop)
         
+        self.playlist.currentMediaChanged.connect(self.songChanged)
+
+    def songChanged(self, media):
+        if not media.isNull():
+            url = media.canonicalUrl()
+        print((url.fileName()))
+        # print((MP3(f"{foldername}/{url.fileName()}")).info.length)
+        songLength = round((MP3(f"E:/Download/canzoni_test/{url.fileName()}")).info.length, 0)
+        print(f"{songLength} songLegth")
+        tempo = str(datetime.timedelta(seconds=songLength))
+        self.total_timeLabel.setText(str(tempo)) #TODO
         
+
+        
+        
+        # return tempo
+        
+
 
     def next(self):
         self.playlist.next()
+        
 
     def previous(self):
         self.playlist.previous()
@@ -103,7 +157,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
 
             
-
+    def printa(self, duration):
+        print(f"{duration} duration")
 
 
 
@@ -139,11 +194,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def play_video(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
+
  
         else:
             self.mediaPlayer.play()
- 
- 
+            print(self.mediaPlayer.position())
+   
     def mediastate_changed(self, state):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
@@ -155,38 +211,52 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.durationSlider.setValue(position)
  
  
-    def duration_changed(self, duration):
-        self.durationSlider.setRange(0, duration)
+    def duration_changed(self, songLength):
+        self.durationSlider.setRange(0, songLength)
  
  
     def set_position(self, position):
         self.mediaPlayer.setPosition(position)
  
     
-    def hhmmss(self, ms):
+    # def hhmmss(self, songLength):
         # s = 1000
         # m = 60000
         # h = 360000
         # h, r = divmod(ms, 36000)
         # m, r = divmod(r, 60000)
         # s, _ = divmod(r, 1000)
+        
+       
 
-        s = (ms/1000) % 60
-        m = (ms/60000) % 60
-        h = (ms/3600000) % 24
-        if ms >= 3600000:
-            return("%d:%02d:%02d" % (h,m,s))
-        else:
-            return("%d:%02d" % (m,s))
+        # s = songLength % 60
+        # m = (songLength/60) %60 
+        # h = (songLength/3600) %60
+        
+        # tempo = str(datetime.timedelta(seconds=songLength))
+        # print(songLength)
+        # print(tempo)
+        
+        # return tempo
+        # if songLength >= 3600000:
+        #     return("%d:%02d:%02d" % (h,m,s))
+        # else:
+        #     return("%d:%02d" % (m,s))
 
-    def update_duration(self, duration):
-        print(duration)
-        if duration >= 0:
-            self.total_timeLabel.setText(self.hhmmss(duration))
+    '''
+    def update_duration(self, tempo):
+        print(tempo)
+        if tempo >= 0:
+            self.total_timeLabel.setText(str(tempo))''' #TODO
 
     def update_time_remaining(self, position):
+        # durata = 191.0
+        # elapsed = (durata - (durata-self.i))*1000
+        # self.mediaPlayer.setPosition(elapsed)
         if position >= 0:
-            self.time_remainingLabel.setText(self.hhmmss(position))
+            print(position/1000)
+            self.time_remainingLabel.setText(str(position/1000))
+    
 
         # Disable the events to prevent updating triggering a setPosition event (can cause stuttering).
         self.durationSlider.blockSignals(True)
@@ -218,7 +288,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.i_volume = 0
             self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
 
- 
+
         
  
         
