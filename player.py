@@ -108,7 +108,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             }],
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download(['https://youtu.be/JdZ3ZuP8-eM'])
+            video = 'https://youtu.be/a4eqgjtMGSI'
+            path = 'E:\\Download'
+            ydl.download([video])
+            info_dict = ydl.extract_info(video)
+            video_id = info_dict.get("id", None)
+            video_title = info_dict.get('title', None)
+            
+            #rename audio without the id #TODO
+            old_file = os.path.join(path,f"{video_title}-{video_id}.mp3")
+            new_file = os.path.join(path,f"{video_title}.mp3")
+            os.rename(old_file, new_file)
+            # os.rename("E:\\Download\\Nightcore - RISE - (League of Legends _ Lyrics)-a4eqgjtMGSI.mp3", "E:\\Download\\Nightcore - RISE - (League of Legends _ Lyrics).mp3")
 
         
         
