@@ -1,21 +1,77 @@
 
 from __future__ import unicode_literals
 import youtube_dl
+
 from sputofy import Ui_MainWindow
+from SecondWindow import Ui_Dialog
+
 import sys, os, random
 
 from mutagen.mp3 import MP3
 import datetime
-from pytube import YouTube
-from moviepy.editor import *
+
+
 
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QStyle
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QStyle, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaPlaylist, QMediaPlayerControl
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTimer
+
+
+        
+class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        
+
+
+        self.startBtn.clicked.connect(self.startDownload)
+        self.download_folderBtn.clicked.connect(self.openDownloadFolder)
+
+
+    def mostra(self):
+        self.show()
+
+    def openDownloadFolder(self):
+        downloadFolderName = QFileDialog.getExistingDirectory(self, "open folder", "c:\\")
+        self.download_folder.setText(downloadFolderName)
+        # return downloadFolderName e.g.("E:/Download")
+        
+        
+    
+    def startDownload(self): #def startDownload(self, YTlink, download_folder)#TODO
+        YTlink = self.youtube_link.text()
+        # download_folder = "E:/Download"
+        download_folder = self.download_folder.text()
+        
+        # array with conversion options
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            'outtmpl': download_folder+'/%(title)s.%(ext)s',
+
+        }
+
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([YTlink])
+            
+            # gettin id and title of song(don't need)
+            # info_dict = ydl.extract_info(YTlink)
+            # video_id = info_dict.get("id", None)
+            # video_title = info_dict.get('title', None)
+
+        
+            
+            
+
 
 
 
@@ -25,48 +81,60 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-
+        
+        self.secondWindow = SecondWindow()
         #create media player object
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
  
  
        
- 
-       
-
         #open button
         self.actionOpen_File.triggered.connect(self.open_file)
         self.actionOpen_Folder.triggered.connect(self.open_folder)
+
+        #download button
+        self.actionOpenSecondWindow.triggered.connect(self.openSecondWindow)
  
  
-        #create button for playing
+        #play button
         self.playBtn.setEnabled(False)
         self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playBtn.clicked.connect(self.play_video)
 
         #playlist button
         self.nextBtn.clicked.connect(self.next)
-        # self.nextBtn.setIcon(self.style().standardIcon(QStyle.SP_))
+        self.nextBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekForward))
         
         self.prevBtn.clicked.connect(self.previous)
-        # self.prevBtn.setIcon(self.style().standardIcon(QStyle.SP_))
+        self.prevBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
+        
+        
+        #duration slider
+        self.durationSlider.sliderMoved.connect(self.set_position)
+        
+        # volumeSlider
+        self.volumeSlider.setProperty("value", 100)
+        
+         # volumeBtn
+        self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+        self.volumeBtn.clicked.connect(self.volumeToggle)
+        self.i_volume = 0
+        
+        
+        
+        
         self.shuffleBtn.clicked.connect(self.shuffle)
  
  
  
-        #create slider
-        self.durationSlider.sliderMoved.connect(self.set_position)
+        
  
  
  
         
-        # volumeSlider
-        self.volumeSlider.setProperty("value", 100)
+        
 
-        # volumeBtn
-        self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
-        self.volumeBtn.clicked.connect(self.volumeToggle)
-        self.i_volume = 0
+       
         
 
         #media player signals
@@ -82,50 +150,36 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
        
         
-        
-        # yt = YouTube('https://youtu.be/JdZ3ZuP8-eM')
-        # yt = yt.get('mp4', '720p')
-        # yt.download('E:\\Download')
-        
-        # mp3 = yt.streams.filter().first()
-        # print(mp3.title)
-        # mp3.download("E:\\Download")
-
-        # video = VideoFileClip(os.path.join("E:\\Download",f"{mp3.title}.mp4"))
-        # video.audio.write_audiofile(os.path.join("E:\\Download", f"{mp3.title}.mp3"))
-
-        # video = VideoFileClip(os.path.join("E:\\Download","Nightcore - Centuries.mp4"))
-        # video.audio.write_audiofile(os.path.join("E:\\Download", "Nightcore - Centuries.mp3"))
-
 
         
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-        }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            video = 'https://youtu.be/a4eqgjtMGSI'
-            path = 'E:\\Download'
-            ydl.download([video])
-            info_dict = ydl.extract_info(video)
-            video_id = info_dict.get("id", None)
-            video_title = info_dict.get('title', None)
+        #TODO windows-flag        
+        # ydl_opts = {
+        #     'format': 'bestaudio/best',
+        #     'postprocessors': [{
+        #         'key': 'FFmpegExtractAudio',
+        #         'preferredcodec': 'mp3',
+        #         'preferredquality': '192',
+        #     }],
+        # }
+        # with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        #     video = 'https://youtu.be/a4eqgjtMGSI'
+        #     path = 'E:\\Download'
+        #     ydl.download([video])
+        #     info_dict = ydl.extract_info(video)
+        #     video_id = info_dict.get("id", None)
+        #     video_title = info_dict.get('title', None)
+
+        #     #rename audio without the id #TODO
+        #     old_file = os.path.join(path,f"{video_title}-{video_id}.mp3")
+        #     new_file = os.path.join(path,f"{video_title}.mp3")
+        #     os.rename(old_file, new_file)
+        #     # os.rename("E:\\Download\\Nightcore - RISE - (League of Legends _ Lyrics)-a4eqgjtMGSI.mp3", "E:\\Download\\Nightcore - RISE - (League of Legends _ Lyrics).mp3")
             
-            #rename audio without the id #TODO
-            old_file = os.path.join(path,f"{video_title}-{video_id}.mp3")
-            new_file = os.path.join(path,f"{video_title}.mp3")
-            os.rename(old_file, new_file)
-            # os.rename("E:\\Download\\Nightcore - RISE - (League of Legends _ Lyrics)-a4eqgjtMGSI.mp3", "E:\\Download\\Nightcore - RISE - (League of Legends _ Lyrics).mp3")
-
         
         
         
         
-        # create the playlist (mettila dentro la funzione open folder )
+        # create the playlist
         self.playlist =  QMediaPlaylist()
         self.playlist.setPlaybackMode(2)
         self.mediaPlayer.setPlaylist(self.playlist)
@@ -143,11 +197,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         print(f"{songLength} songLegth")
         tempo = str(datetime.timedelta(seconds=songLength))
         self.total_timeLabel.setText(str(tempo)) #TODO
-        
-
-        
-        
-        # return tempo
         
 
 
@@ -174,7 +223,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 
-
+    def openSecondWindow(self):
+        self.secondWindow.mostra()
+        
+        
 
 
     def open_folder(self):
@@ -222,48 +274,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.durationSlider.setValue(position)
  
  
-    def duration_changed(self, songLength):
-        self.durationSlider.setRange(0, songLength)
+    def duration_changed(self, duration):
+        self.durationSlider.setRange(0, duration)
  
  
     def set_position(self, position):
         self.mediaPlayer.setPosition(position)
  
     
-    # def hhmmss(self, songLength):
-        # s = 1000
-        # m = 60000
-        # h = 360000
-        # h, r = divmod(ms, 36000)
-        # m, r = divmod(r, 60000)
-        # s, _ = divmod(r, 1000)
-        
-       
-
-        # s = songLength % 60
-        # m = (songLength/60) %60 
-        # h = (songLength/3600) %60
-        
-        # tempo = str(datetime.timedelta(seconds=songLength))
-        # print(songLength)
-        # print(tempo)
-        
-        # return tempo
-        # if songLength >= 3600000:
-        #     return("%d:%02d:%02d" % (h,m,s))
-        # else:
-        #     return("%d:%02d" % (m,s))
-
-    '''
-    def update_duration(self, tempo):
-        print(tempo)
-        if tempo >= 0:
-            self.total_timeLabel.setText(str(tempo))''' #TODO
+    
 
     def update_time_remaining(self, position):
-        # durata = 191.0
-        # elapsed = (durata - (durata-self.i))*1000
-        # self.mediaPlayer.setPosition(elapsed)
         if position >= 0:
             print(position/1000)
             self.time_remainingLabel.setText(str(position/1000))

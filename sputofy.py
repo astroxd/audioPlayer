@@ -104,9 +104,13 @@ class Ui_MainWindow(object):
         self.actionOpen_Folder = QtWidgets.QAction(MainWindow)
         self.actionOpen_Folder.setObjectName("actionOpen_Folder")
 
+        self.actionOpenSecondWindow = QtWidgets.QAction(MainWindow)
+        self.actionOpenSecondWindow.setObjectName("actionOpenSecondWindow")
+
 
         self.menuFile.addAction(self.actionOpen_File)
         self.menuFile.addAction(self.actionOpen_Folder)
+        self.menuFile.addAction(self.actionOpenSecondWindow)
         self.menubar.addAction(self.menuFile.menuAction())
 
 
@@ -117,8 +121,8 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.playBtn.setText(_translate("MainWindow", ""))
-        self.nextBtn.setText(_translate("MainWindow", "2"))
-        self.prevBtn.setText(_translate("MainWindow", "3"))
+        self.nextBtn.setText(_translate("MainWindow", ""))
+        self.prevBtn.setText(_translate("MainWindow", ""))
         self.shuffleBtn.setText(_translate("MainWindow","5"))
         self.loopBtn.setText(_translate("MainWindow", "6"))
         self.volumeBtn.setText(_translate("MainWindow", ""))
@@ -127,4 +131,4 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.actionOpen_File.setText(_translate("MainWindow", "Open File"))
         self.actionOpen_Folder.setText(_translate("MainWindow", "Open Folder"))
-
+        self.actionOpenSecondWindow.setText(_translate("MainWindow","Open Second Window"))
