@@ -122,12 +122,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         
         
-        
+        #TODO
         self.shuffleBtn.clicked.connect(self.shuffle)
+        self.loopBtn.clicked.connect(self.loop)
  
- 
- 
+
         
+        
+
  
  
  
@@ -139,43 +141,20 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #media player signals
  
-        self.mediaPlayer.stateChanged.connect(self.mediastate_changed)
-        self.mediaPlayer.positionChanged.connect(self.position_changed)
-        self.mediaPlayer.durationChanged.connect(self.duration_changed)
+        self.mediaPlayer.stateChanged.connect(self.mediastate_changed)# change play/pause btn icon
+        self.mediaPlayer.positionChanged.connect(self.position_changed)# duration slider avanza
+        self.mediaPlayer.durationChanged.connect(self.duration_changed)# set range of duration slider
         self.mediaPlayer.durationChanged.connect(self.printa)#TODO
-        self.volumeSlider.valueChanged.connect(self.setVolume)   
+        self.volumeSlider.valueChanged.connect(self.setVolume)# set Volume with the value from volume slider
 
-        self.mediaPlayer.positionChanged.connect(self.update_time_remaining)
-        self.durationSlider.valueChanged.connect(self.mediaPlayer.setPosition) 
+        self.mediaPlayer.positionChanged.connect(self.update_time_remaining)# time remaining label
+        self.durationSlider.valueChanged.connect(self.mediaPlayer.setPosition)# se muovi lo slider il video va avanti
 
-       
+        self.mediaPlayer.mediaStatusChanged.connect(self.autoNextTrack)# appena finisce la canzone va avanti di una traccia e la playa
+
+        self.mediaPlayer.mediaStatusChanged.connect(self.loopMode)# appena finisce la canzone ed è in playbackmode 3 play la successiva
         
-
-        
-        #TODO windows-flag        
-        # ydl_opts = {
-        #     'format': 'bestaudio/best',
-        #     'postprocessors': [{
-        #         'key': 'FFmpegExtractAudio',
-        #         'preferredcodec': 'mp3',
-        #         'preferredquality': '192',
-        #     }],
-        # }
-        # with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        #     video = 'https://youtu.be/a4eqgjtMGSI'
-        #     path = 'E:\\Download'
-        #     ydl.download([video])
-        #     info_dict = ydl.extract_info(video)
-        #     video_id = info_dict.get("id", None)
-        #     video_title = info_dict.get('title', None)
-
-        #     #rename audio without the id #TODO
-        #     old_file = os.path.join(path,f"{video_title}-{video_id}.mp3")
-        #     new_file = os.path.join(path,f"{video_title}.mp3")
-        #     os.rename(old_file, new_file)
-        #     # os.rename("E:\\Download\\Nightcore - RISE - (League of Legends _ Lyrics)-a4eqgjtMGSI.mp3", "E:\\Download\\Nightcore - RISE - (League of Legends _ Lyrics).mp3")
-            
-        
+        self.mediaPlayer.mediaStatusChanged.connect(self.shuffleMode)# appena finisce la canzone ed è in playbackmode 4 playa una canzone random
         
         
         
@@ -183,17 +162,45 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.playlist =  QMediaPlaylist()
         self.playlist.setPlaybackMode(2)
         self.mediaPlayer.setPlaylist(self.playlist)
+        # self.playlistMode = 2
 
-        self.loopBtn.clicked.connect(self.loop)
+        # self.playlist.currentMediaChanged.connect(self.shuffleMode)
+
         
-        self.playlist.currentMediaChanged.connect(self.songChanged)
+        
+
+    def autoNextTrack(self):
+        if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
+            if self.playlist.currentIndex() != self.playlist.mediaCount()-1: # index starts from 0       mediacount starts from 1
+                self.playlist.next()
+                self.mediaPlayer.play()
+    
+    def loopMode(self):
+        if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
+            if self.playlist.playbackMode() == 3:
+                self.playlist.next()
+                self.mediaPlayer.play()
+                
+    def shuffleMode(self):
+        if self.playlist.playbackMode() == 4:
+            while self.playlist.previousIndex() == self.playlist.currentIndex():
+                self.playlist.setCurrentIndex(random.randint(0,self.playlist.mediaCount()-1))
+
+            if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia and self.playlist.currentIndex() == self.playlist.mediaCount()-1: # ti serve sapere che è l'ultima canzone così puoi farlo ripartire
+                while self.playlist.currentIndex() == self.playlist.mediaCount()-1:
+                    self.playlist.setCurrentIndex(random.randint(0,self.playlist.mediaCount()-1))
+                self.mediaPlayer.play()
+                        
+
+                
+        # self.playlist.currentMediaChanged.connect(self.songChanged)
 
     def songChanged(self, media):
         if not media.isNull():
             url = media.canonicalUrl()
         print((url.fileName()))
         # print((MP3(f"{foldername}/{url.fileName()}")).info.length)
-        songLength = round((MP3(f"E:/Download/canzoni_test/{url.fileName()}")).info.length, 0)
+        songLength = round((MP3(f"E:/Download/canzoni_test2/{url.fileName()}")).info.length, 0)
         print(f"{songLength} songLegth")
         tempo = str(datetime.timedelta(seconds=songLength))
         self.total_timeLabel.setText(str(tempo)) #TODO
@@ -211,11 +218,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     # TODO
     def shuffle(self):
         self.playlist.setPlaybackMode(4)
+        # self.playlistMode = 4
     
     def loop(self):
         self.playlist.setPlaybackMode(3)
-        
-
+        # self.playlistMode = 3
             
     def printa(self, duration):
         print(f"{duration} duration")
@@ -261,7 +268,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
  
         else:
             self.mediaPlayer.play()
-            print(self.mediaPlayer.position())
    
     def mediastate_changed(self, state):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
@@ -269,6 +275,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
  
         else:
             self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+    
  
     def position_changed(self, position):
         self.durationSlider.setValue(position)
@@ -286,7 +293,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def update_time_remaining(self, position):
         if position >= 0:
-            print(position/1000)
+            print(position/1000)#TODO
             self.time_remainingLabel.setText(str(position/1000))
     
 
