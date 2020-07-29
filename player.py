@@ -107,6 +107,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.prevBtn.clicked.connect(self.previous)
         self.prevBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
+
+        self.shuffleBtn.clicked.connect(self.shuffle)#TODO icon
+        self.loopBtn.clicked.connect(self.loop)#TODO icon
         
         
         #duration slider
@@ -122,9 +125,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         
         
-        #TODO
-        self.shuffleBtn.clicked.connect(self.shuffle)
-        self.loopBtn.clicked.connect(self.loop)
+        
  
 
         
@@ -162,9 +163,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.playlist =  QMediaPlaylist()
         self.playlist.setPlaybackMode(2)
         self.mediaPlayer.setPlaylist(self.playlist)
-        # self.playlistMode = 2
-
-        # self.playlist.currentMediaChanged.connect(self.shuffleMode)
 
         
         
@@ -183,12 +181,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 
     def shuffleMode(self):
         if self.playlist.playbackMode() == 4:
-            while self.playlist.previousIndex() == self.playlist.currentIndex():
-                self.playlist.setCurrentIndex(random.randint(0,self.playlist.mediaCount()-1))
-
-            if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia and self.playlist.currentIndex() == self.playlist.mediaCount()-1: # ti serve sapere che è l'ultima canzone così puoi farlo ripartire
-                while self.playlist.currentIndex() == self.playlist.mediaCount()-1:
+            if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
+                while self.playlist.previousIndex() == self.playlist.currentIndex():
                     self.playlist.setCurrentIndex(random.randint(0,self.playlist.mediaCount()-1))
+                
+                if self.playlist.currentIndex() == self.playlist.mediaCount()-1: # ti serve sapere che è l'ultima canzone così puoi farlo ripartire
+                    while self.playlist.currentIndex() == self.playlist.mediaCount()-1:
+                        self.playlist.setCurrentIndex(random.randint(0,self.playlist.mediaCount()-1))
                 self.mediaPlayer.play()
                         
 
@@ -215,15 +214,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.playlist.previous()
 
     
-    # TODO
+    
     def shuffle(self):
         self.playlist.setPlaybackMode(4)
-        # self.playlistMode = 4
     
     def loop(self):
         self.playlist.setPlaybackMode(3)
-        # self.playlistMode = 3
             
+    #TODO
     def printa(self, duration):
         print(f"{duration} duration")
 
@@ -238,14 +236,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def open_folder(self):
         foldername = QFileDialog.getExistingDirectory(self, "open folder", "c:\\")
-        self.max_songs = 0 #TODO
         
         for song in os.listdir(foldername):
             self.playlist.addMedia(QMediaContent(QUrl(f"{foldername}/{song}")))
             self.textBrowser.append(song.replace(".mp3", ""))
-            self.max_songs+1
         self.playlist.setCurrentIndex(0)
-        # self.playlist.setPlaybackMode(2)
         self.playBtn.setEnabled(True)
         
 
@@ -283,6 +278,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
  
     def duration_changed(self, duration):
         self.durationSlider.setRange(0, duration)
+        self.total_timeLabel.setText(str(datetime.timedelta(seconds=round(duration/1000))))
  
  
     def set_position(self, position):
