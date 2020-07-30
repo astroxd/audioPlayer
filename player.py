@@ -124,7 +124,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.i_volume = 0
         
         
-        
+        #test
+        self.playlistIsEmpty = True
         
  
 
@@ -233,26 +234,39 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         
 
-
     def open_folder(self):
+        # self.playlist.clear()
         foldername = QFileDialog.getExistingDirectory(self, "open folder", "c:\\")
         
-        for song in os.listdir(foldername):
-            self.playlist.addMedia(QMediaContent(QUrl(f"{foldername}/{song}")))
-            self.textBrowser.append(song.replace(".mp3", ""))
-        self.playlist.setCurrentIndex(0)
-        self.playBtn.setEnabled(True)
+        if foldername != '':
+            self.playlist.clear()
+            for song in os.listdir(foldername):
+                self.playlist.addMedia(QMediaContent(QUrl(f"{foldername}/{song}")))
+                self.textBrowser.append(song.replace(".mp3", ""))
+            self.playlist.setCurrentIndex(0)
+            self.playBtn.setEnabled(True)
+            self.playlistIsEmpty = False
         
 
         
 
     def open_file(self):
+        # if self.playlistIsEmpty == False:
+        #     self.playlist.clear()
+        #     print("pulito")
+        #     self.playlistIsEmpty = True
+           
         filename, _ = QFileDialog.getOpenFileName(self, "Open Video")
  
         if filename != '':
+            if self.playlistIsEmpty == False:
+                self.playlist.clear()
+                print("pulito")
+                self.playlistIsEmpty = True
             self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(filename)))
             self.playBtn.setEnabled(True)
-            
+        
+
             
  
     
