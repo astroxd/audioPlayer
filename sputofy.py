@@ -21,9 +21,9 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
 
 
-        self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(55, 11, 551, 211))
-        self.textBrowser.setObjectName("textBrowser")
+        # self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
+        # self.textBrowser.setGeometry(QtCore.QRect(55, 11, 551, 211))
+        # self.textBrowser.setObjectName("textBrowser")
 
 
         self.durationSlider = QtWidgets.QSlider(self.centralwidget)
@@ -112,6 +112,18 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionOpen_Folder)
         self.menuFile.addAction(self.actionOpenSecondWindow)
         self.menubar.addAction(self.menuFile.menuAction())
+
+
+        #TODO
+
+        self.playlistView = QtWidgets.QListView(self.centralwidget)
+        self.playlistView.setGeometry(QtCore.QRect(55, 11, 551, 211))
+        self.playlistView.setAcceptDrops(True)
+        self.playlistView.setProperty("showDropIndicator", True)
+        # self.playlistView.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly)
+        self.playlistView.setAlternatingRowColors(True)
+        self.playlistView.setUniformItemSizes(True)
+        self.playlistView.setObjectName("playlistView")
 
 
         self.retranslateUi(MainWindow)

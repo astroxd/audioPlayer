@@ -18,10 +18,23 @@ from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaPlaylist, QMed
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, QUrl, QTimer
+from PyQt5.QtCore import Qt, QUrl, QTimer, QAbstractListModel
 
 
-        
+class PlaylistModel(QAbstractListModel):
+    def __init__(self, playlist, *args, **kwargs):
+        super(PlaylistModel, self).__init__(*args, **kwargs)
+        self.playlist = playlist
+
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            media = self.playlist.media(index.row())
+            return media.canonicalUrl().fileName().replace(".mp3","")
+
+    def rowCount(self, index):
+        return self.playlist.mediaCount()
+
+
 class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self):
         super().__init__()
@@ -124,7 +137,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.i_volume = 0
         
         
-        #test
+        #clear the playlist
         self.playlistIsEmpty = True
         
  
@@ -165,7 +178,23 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.playlist.setPlaybackMode(2)
         self.mediaPlayer.setPlaylist(self.playlist)
 
-        
+        # non so perché ma va model
+        self.model = PlaylistModel(self.playlist)
+        self.playlistView.setModel(self.model)
+        self.playlist.currentIndexChanged.connect(self.playlist_position_changed)
+        selection_model = self.playlistView.selectionModel()
+        selection_model.selectionChanged.connect(self.playlist_selection_changed)
+
+
+    def playlist_position_changed(self, i):
+        if i > -1:
+            ix = self.model.index(i)
+            self.playlistView.setCurrentIndex(ix)
+
+    def playlist_selection_changed(self, ix):
+        # We receive a QItemSelection from selectionChanged.
+        i = ix.indexes()[0].row()
+        self.playlist.setCurrentIndex(i)
         
 
     def autoNextTrack(self):
@@ -235,37 +264,33 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
 
     def open_folder(self):
-        # self.playlist.clear()
         foldername = QFileDialog.getExistingDirectory(self, "open folder", "c:\\")
         
         if foldername != '':
             self.playlist.clear()
             for song in os.listdir(foldername):
                 self.playlist.addMedia(QMediaContent(QUrl(f"{foldername}/{song}")))
-                self.textBrowser.append(song.replace(".mp3", ""))
+                # self.textBrowser.append(song.replace(".mp3", ""))
             self.playlist.setCurrentIndex(0)
             self.playBtn.setEnabled(True)
             self.playlistIsEmpty = False
+            self.model.layoutChanged.emit()
+
         
 
         
 
     def open_file(self):
-        # if self.playlistIsEmpty == False:
-        #     self.playlist.clear()
-        #     print("pulito")
-        #     self.playlistIsEmpty = True
-           
         filename, _ = QFileDialog.getOpenFileName(self, "Open Video")
  
         if filename != '':
             if self.playlistIsEmpty == False:
                 self.playlist.clear()
-                print("pulito")
                 self.playlistIsEmpty = True
             self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(filename)))
             self.playBtn.setEnabled(True)
-        
+            self.model.layoutChanged.emit()
+
 
             
  
