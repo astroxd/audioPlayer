@@ -77,7 +77,7 @@ class Ui_MainWindow(object):
 
         self.total_timeLabel = QtWidgets.QLabel(self.centralwidget)
         self.total_timeLabel.setGeometry(QtCore.QRect(420, 310, 31, 21))
-        self.total_timeLabel.setGeometry(QtCore.QRect(310, 360, 160, 21)) #TODO
+        # self.total_timeLabel.setGeometry(QtCore.QRect(310, 360, 160, 21)) #TODO
         self.total_timeLabel.setObjectName("total_timeLabel")
 
 

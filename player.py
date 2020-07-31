@@ -1,6 +1,7 @@
 
 from __future__ import unicode_literals
 import youtube_dl
+import yaml
 
 from sputofy import Ui_MainWindow
 from SecondWindow import Ui_Dialog
@@ -20,6 +21,20 @@ from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTimer, QAbstractListModel
 
+#config
+def yaml_loader():
+    with open("audioPlayer/config.yaml", "r") as config:
+        data = yaml.load(config , Loader=yaml.FullLoader)
+        return data
+
+def yaml_dump(data):
+    with open("audioPlayer/config.yaml", "w") as config:
+        yaml.dump(data, config)
+
+user = os.getlogin()
+default_folderConfig = {"default_folder": "C:\\Users\\"+user+"\\Desktop\\sputofy_songs"} 
+yaml_dump(default_folderConfig)
+#TODO
 
 class PlaylistModel(QAbstractListModel):
     def __init__(self, playlist, *args, **kwargs):
@@ -46,6 +61,7 @@ class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
         self.download_folderBtn.clicked.connect(self.openDownloadFolder)
 
 
+
     def mostra(self):
         self.show()
 
@@ -59,8 +75,14 @@ class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
     def startDownload(self): #def startDownload(self, YTlink, download_folder)#TODO
         YTlink = self.youtube_link.text()
         # download_folder = "E:/Download"
-        download_folder = self.download_folder.text()
-        
+        download_folder = yaml_loader()['default_folder']
+        if self.download_folder.text() != "":
+            download_folder = self.download_folder.text()
+        else:
+            try:
+                os.makedirs(download_folder)
+            except:
+                print("già esiste")
         # array with conversion options
         ydl_opts = {
             'format': 'bestaudio/best',
