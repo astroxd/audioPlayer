@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import youtube_dl
 import yaml
-
+import win32ctypes.pywin32
 from sputofy import Ui_MainWindow
 from SecondWindow import Ui_Dialog
 
@@ -21,20 +21,41 @@ from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTimer, QAbstractListModel
 
-#config
-def yaml_loader():
-    with open("audioPlayer/config.yaml", "r") as config:
-        data = yaml.load(config , Loader=yaml.FullLoader)
-        return data
 
-def yaml_dump(data):
-    with open("audioPlayer/config.yaml", "w") as config:
-        yaml.dump(data, config)
+class config():
+    def __init__(self):
+        self.MainWindow = Window()
+        self.data = self.yaml_loader()
+        self.default_folder()
+        self.last_window_size()
+        
+    def yaml_loader(self):
+        with open("audioPlayer/config.yaml", "r") as config:
+            data = yaml.load(config , Loader=yaml.FullLoader)
+            return data
 
-user = os.getlogin()
-default_folderConfig = {"default_folder": "C:\\Users\\"+user+"\\Desktop\\sputofy_songs"} 
-yaml_dump(default_folderConfig)
-#TODO
+    def yaml_dump(self, data):
+        with open("audioPlayer/config.yaml", "w") as config:
+            yaml.dump(data, config)
+
+    def default_folder(self):
+        user = os.getlogin()
+        default_folderConfig = {"default_folder": "C:\\Users\\"+user+"\\Desktop\\sputofy_songs"} 
+        
+        self.yaml_dump(default_folderConfig)
+
+    def last_window_size(self):
+        self.data['last_window_size']['heigth'] = self.MainWindow.height()
+        self.data['last_window_size']['width'] = self.MainWindow.width()
+
+        self.yaml_dump(self.data)#TODO è gia nella main window
+
+
+        
+        
+
+
+
 
 class PlaylistModel(QAbstractListModel):
     def __init__(self, playlist, *args, **kwargs):
@@ -75,11 +96,12 @@ class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
     def startDownload(self): #def startDownload(self, YTlink, download_folder)#TODO
         YTlink = self.youtube_link.text()
         # download_folder = "E:/Download"
-        download_folder = yaml_loader()['default_folder']
+        
         if self.download_folder.text() != "":
             download_folder = self.download_folder.text()
         else:
             try:
+                download_folder = yaml_loader()['default_folder']
                 os.makedirs(download_folder)
             except:
                 print("già esiste")
@@ -113,16 +135,35 @@ class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
+    
+    
+    
+    
     def __init__(self, parent=None):
         super().__init__(parent)
+        
+        self.MainData = self.Window_yaml_loader()
+
         self.setupUi(self)
+
+        self.xCor = self.MainData['last_position']['xPos']#TODO
+        self.yCor = self.MainData['last_position']['yPos']#TODO
+        self.widthSize = self.MainData['last_window_size']['width']#TODO
+        self.heightSize = self.MainData['last_window_size']['heigth']#TODO
+        
+        # self.resize(self.MainData['last_window_size']['width'], self.MainData['last_window_size']['heigth'])
+        # self.setGeometry(self.MainData['last_position']['xPos'], self.MainData['last_position']['yPos'],self.MainData['last_window_size']['width'], self.MainData['last_window_size']['heigth'])
+        self.setGeometry(self.xCor,self.yCor,self.widthSize,self.heightSize)#TODO
+        
+        self.setWindowTitle("ti sputo fy")
+
+        
+        
         
         self.secondWindow = SecondWindow()
         #create media player object
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
  
- 
-       
         #open button
         self.actionOpen_File.triggered.connect(self.open_file)
         self.actionOpen_Folder.triggered.connect(self.open_folder)
@@ -194,11 +235,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mediaPlayer.mediaStatusChanged.connect(self.shuffleMode)# appena finisce la canzone ed è in playbackmode 4 playa una canzone random
         
         
-        
         # create the playlist
         self.playlist =  QMediaPlaylist()
         self.playlist.setPlaybackMode(2)
         self.mediaPlayer.setPlaylist(self.playlist)
+
+
+        self.playlist.currentIndexChanged.connect(self.setTitle)
+        
 
         # non so perché ma va model
         self.model = PlaylistModel(self.playlist)
@@ -207,12 +251,41 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         selection_model = self.playlistView.selectionModel()
         selection_model.selectionChanged.connect(self.playlist_selection_changed)
 
+    def setTitle(self):
+        self.setWindowTitle(f"ti sputo fy - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
+        
+    
+    
+    def moveEvent(self, event):    # QMoveEvent      
+        xAxis = event.pos().x()
+        yAxis = event.pos().y()
+        self.MainData['last_position']['xPos'] = xAxis
+        self.MainData['last_position']['yPos'] = yAxis
+        self.Window_yaml_dump(self.MainData)
+        
+        super(Window, self).moveEvent(event)
+        
 
+    def resizeEvent(self, event):
+        width = self.width()
+        height = self.height()
+        # print(width, height)
+        self.MainData['last_window_size']['width'] = width
+        self.MainData['last_window_size']['heigth'] = height
+        self.Window_yaml_dump(self.MainData)
+        super().resizeEvent(event)
+    
+    
+    
+    
     def playlist_position_changed(self, i):
         if i > -1:
             ix = self.model.index(i)
             self.playlistView.setCurrentIndex(ix)
 
+    
+    
+    
     def playlist_selection_changed(self, ix):
         # We receive a QItemSelection from selectionChanged.
         i = ix.indexes()[0].row()
@@ -232,8 +305,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.mediaPlayer.play()
                 
     def shuffleMode(self):
-        if self.playlist.playbackMode() == 4:
-            if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
+        if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
+            if self.playlist.playbackMode() == 4:
                 while self.playlist.previousIndex() == self.playlist.currentIndex():
                     self.playlist.setCurrentIndex(random.randint(0,self.playlist.mediaCount()-1))
                 
@@ -297,6 +370,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.playBtn.setEnabled(True)
             self.playlistIsEmpty = False
             self.model.layoutChanged.emit()
+            self.setTitle()
 
         
 
@@ -312,6 +386,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(filename)))
             self.playBtn.setEnabled(True)
             self.model.layoutChanged.emit()
+            self.setTitle()
 
 
             
@@ -383,8 +458,16 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.i_volume = 0
             self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+    
 
+    def Window_yaml_loader(self):
+        with open("audioPlayer/config.yaml", "r") as WindowConfig:
+            WindowData = yaml.load(WindowConfig , Loader=yaml.FullLoader)
+            return WindowData
 
+    def Window_yaml_dump(self, data):
+        with open("audioPlayer/config.yaml", "w") as WindowConfig:
+            yaml.dump(data, WindowConfig)
         
  
         
@@ -397,5 +480,6 @@ if __name__ == "__main__":
 
     window = Window()
     window.show()
+    config()#TODO
 
     sys.exit(app.exec_())
