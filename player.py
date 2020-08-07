@@ -1,7 +1,7 @@
 
 from __future__ import unicode_literals
 
-import datetime
+import datetime #in teoria l'ho rimosso creando la funzione time_format()#TODO
 import os
 import random
 import sys
@@ -10,8 +10,8 @@ import yaml
 import youtube_dl
 from mutagen.mp3 import MP3
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QAbstractListModel, Qt, QTimer, QUrl, QEvent
-from PyQt5.QtGui import QIcon, QMoveEvent, QCloseEvent
+from PyQt5.QtCore import QAbstractListModel, Qt, QTimer, QUrl
+from PyQt5.QtGui import QIcon
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimedia import (QMediaContent, QMediaPlayer,
                                 QMediaPlayerControl, QMediaPlaylist)
@@ -22,6 +22,15 @@ from PyQt5.QtWidgets import (QFileDialog, QHBoxLayout, QLineEdit, QMainWindow,
 from SecondWindow import Ui_Dialog
 from sputofy import Ui_MainWindow
 
+def time_format(seconds):
+    mm, ss = divmod(seconds, 60)
+    hh, mm = divmod(mm, 60)
+    if seconds >= 3600:
+        s = "%d:%02d:%02d" % (hh, mm, ss)
+    else:
+        s = "%d:%02d" % (mm, ss)
+    
+    return s
 
 def yaml_loader():
     with open("audioPlayer/config.yaml", "r") as config:
@@ -60,7 +69,7 @@ class PlaylistModel(QAbstractListModel):
         if role == Qt.DisplayRole:
             media = self.playlist.media(index.row())
             song = media.canonicalUrl().fileName().replace(".mp3","")
-            songPosition = f"{index.row()+1}  {song}"
+            songPosition = f"#{index.row()+1}    {song}"
             # return media.canonicalUrl().fileName().replace(".mp3", "")
             return songPosition
 
@@ -386,16 +395,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def duration_changed(self, duration):
         self.durationSlider.setRange(0, duration)
-        self.total_timeLabel.setText(
-            str(datetime.timedelta(seconds=round(duration/1000))))
+        # self.total_timeLabel.setText(
+        #     str(datetime.timedelta(seconds=round(duration/1000))))
+        self.total_timeLabel.setText(time_format(round(duration/1000)))
 
     def set_position(self, position):
         self.mediaPlayer.setPosition(position)
 
     def update_time_remaining(self, position):
         if position >= 0:
-            print(position/1000)  # TODO
-            self.time_remainingLabel.setText(str(position/1000))
+            # print(position/1000)  # TODO
+            self.time_remainingLabel.setText(time_format((position/1000)))
+            # self.time_remainingLabel.setText(str(datetime.timedelta(seconds=round(position/1000))))
 
         # Disable the events to prevent updating triggering a setPosition event (can cause stuttering).
         self.durationSlider.blockSignals(True)
