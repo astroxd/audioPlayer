@@ -56,8 +56,8 @@ class config():
         yaml_dump(default_folderConfig)
 
     def last_window_size(self):
-        self.data['last_window_size']['heigth'] = self.height
         self.data['last_window_size']['width'] = self.width
+        self.data['last_window_size']['heigth'] = self.height
         yaml_dump(self.data)  # TODO è gia nella main window
 
 class PlaylistModel(QAbstractListModel):
@@ -143,7 +143,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.setGeometry(self.MainData['last_position']['xPos'], self.MainData['last_position']['yPos'],self.MainData['last_window_size']['width'], self.MainData['last_window_size']['heigth'])
         self.setGeometry(self.xCor, self.yCor, self.widthSize,
                          self.heightSize)
-
+        
         self.setWindowTitle("ti sputo fy")
 
         self.secondWindow = SecondWindow()
@@ -239,8 +239,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event):
         # retrieve position
-        xAxis = self.pos().x()
-        yAxis = self.pos().y()
+        xAxis = self.geometry().x()
+        yAxis = self.geometry().y()
         
         self.data['last_position']['xPos'] = xAxis
         self.data['last_position']['yPos'] = yAxis
@@ -253,6 +253,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data['last_window_size']['heigth'] = height
         
         yaml_dump(self.data)
+
+
 
     
     
