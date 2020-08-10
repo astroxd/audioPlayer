@@ -22,6 +22,16 @@ from PyQt5.QtWidgets import (QFileDialog, QHBoxLayout, QLineEdit, QMainWindow,
 from SecondWindow import Ui_Dialog
 from sputofy import Ui_MainWindow
 
+def hhmmss(ms):
+    # s = 1000
+    # m = 60000
+    # h = 360000
+    h, r = divmod(ms, 36000)
+    m, r = divmod(r, 60000)
+    s, _ = divmod(r, 1000)
+    return ("%d:%02d:%02d" % (h,m,s)) if h else ("%d:%02d" % (m,s))
+
+
 def time_format(seconds):
     mm, ss = divmod(seconds, 60)
     hh, mm = divmod(mm, 60)
@@ -130,224 +140,127 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        # load config
         self.data = yaml_loader()
 
+        # load ui
         self.setupUi(self)
+        self.setWindowTitle("ti sputo fy")
 
+        # "libary"
         self.xCor = self.data['last_position']['xPos']
         self.yCor = self.data['last_position']['yPos']
         self.widthSize = self.data['last_window_size']['width']
         self.heightSize = self.data['last_window_size']['heigth']
 
-        # self.resize(self.MainData['last_window_size']['width'], self.MainData['last_window_size']['heigth'])
-        # self.setGeometry(self.MainData['last_position']['xPos'], self.MainData['last_position']['yPos'],self.MainData['last_window_size']['width'], self.MainData['last_window_size']['heigth'])
-        self.setGeometry(self.xCor, self.yCor, self.widthSize,
-                         self.heightSize)
+        self.setGeometry(self.xCor, self.yCor, self.widthSize,self.heightSize)
         
-        self.setWindowTitle("ti sputo fy")
-
+        #load secondWindow
         self.secondWindow = SecondWindow()
+
+        
+        
+        
+        # open secondWindow using button
+        self.actionOpenSecondWindow.triggered.connect(self.secondWindow.mostra)
+
+        #===========================  mediaplayer  ==============================
+        
         # create media player object
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
 
+        
         # open button
         self.actionOpen_File.triggered.connect(self.open_file)
         self.actionOpen_Folder.triggered.connect(self.open_folder)
 
-        # download button
-        self.actionOpenSecondWindow.triggered.connect(self.openSecondWindow)
+        
 
         # play button
         self.playBtn.setEnabled(False)
         self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playBtn.clicked.connect(self.play_video)
 
-        # playlist button
-        self.nextBtn.clicked.connect(self.next)
-        self.nextBtn.setIcon(self.style().standardIcon(
-            QStyle.SP_MediaSeekForward))
+        
 
-        self.prevBtn.clicked.connect(self.previous)
-        self.prevBtn.setIcon(self.style().standardIcon(
-            QStyle.SP_MediaSeekBackward))
-
-        self.shuffleBtn.clicked.connect(self.shuffle)  # TODO icon
-        self.loopBtn.clicked.connect(self.loop)  # TODO icon
-
+        
         # duration slider
-        self.durationSlider.sliderMoved.connect(self.set_position)
-
-        # volumeSlider
-        self.volumeSlider.setProperty("value", 100)
-
-        # volumeBtn
-        self.volumeBtn.setIcon(
-            self.style().standardIcon(QStyle.SP_MediaVolume))
-        self.volumeBtn.clicked.connect(self.volumeToggle)
-        self.i_volume = 0
-
-        # clear the playlist
-        self.playlistIsEmpty = True
-
-        # media player signals
-
-        self.mediaPlayer.stateChanged.connect(
-            self.mediastate_changed)  # change play/pause btn icon
-        self.mediaPlayer.positionChanged.connect(
-            self.position_changed)  # duration slider avanza
-        self.mediaPlayer.durationChanged.connect(
-            self.duration_changed)  # set range of duration slider
-        self.mediaPlayer.durationChanged.connect(self.printa)  # TODO
-        # set Volume with the value from volume slider
-        self.volumeSlider.valueChanged.connect(self.setVolume)
-
-        self.mediaPlayer.positionChanged.connect(
-            self.update_time_remaining)  # time remaining label
+        # self.durationSlider.sliderMoved.connect(self.mediaPlayer.setPosition)
+        
         # se muovi lo slider il video va avanti
         self.durationSlider.valueChanged.connect(self.mediaPlayer.setPosition)
 
-        # appena finisce la canzone va avanti di una traccia e la playa
-        self.mediaPlayer.mediaStatusChanged.connect(self.autoNextTrack)
+        
+        
+        # volumeSlider
+        self.volumeSlider.setProperty("value", 100)
+        self.volumeSlider.valueChanged.connect(self.setVolume)
 
-        # appena finisce la canzone ed è in playbackmode 3 play la successiva
-        self.mediaPlayer.mediaStatusChanged.connect(self.loopMode)
+        # volumeBtn
+        self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+        self.volumeBtn.clicked.connect(self.volumeToggle)
+        self.i_volume = 0
 
-        # appena finisce la canzone ed è in playbackmode 4 playa una canzone random
-        self.mediaPlayer.mediaStatusChanged.connect(self.shuffleMode)
 
+
+        # media player signals
+
+        self.mediaPlayer.durationChanged.connect(self.duration_changed)  # set range of duration slider
+        self.mediaPlayer.positionChanged.connect(self.position_changed)  # duration slider avanza
+        
+        
+        #===========================  playlist  ==============================
+        
         # create the playlist
         self.playlist = QMediaPlaylist()
         self.playlist.setPlaybackMode(2)
         self.mediaPlayer.setPlaylist(self.playlist)
 
-        self.playlist.currentIndexChanged.connect(self.setTitle)
+        # clear the playlist
+        self.playlistIsEmpty = True
+
+
+
+        
 
         # non so perché ma va model
         self.model = PlaylistModel(self.playlist)
         self.playlistView.setModel(self.model)
-        self.playlist.currentIndexChanged.connect(
-            self.playlist_position_changed)
+        self.playlist.currentIndexChanged.connect(self.playlist_position_changed)
         selection_model = self.playlistView.selectionModel()
-        selection_model.selectionChanged.connect(
-            self.playlist_selection_changed)
+        selection_model.selectionChanged.connect(self.playlist_selection_changed)
+        
+        
+        #===========================  playlist function  ==============================
+        
+        self.playlist.currentIndexChanged.connect(self.setTitle)
+        
+        
+        # playlist button
+        self.nextBtn.clicked.connect(self.playlist.next)
+        self.nextBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekForward))
+
+        self.prevBtn.clicked.connect(self.playlist.previous)
+        self.prevBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
+
+        
+        self.mediaPlayer.mediaStatusChanged.connect(self.autoNextTrack)# appena finisce la canzone va avanti di una traccia e la playa
+
+        
+        self.loopBtn.clicked.connect(self.loop)  # TODO icon
+        #self.mediaPlayer.mediaStatusChanged.connect(self.loopMode)# appena finisce la canzone ed è in playbackmode 3 play la successiva
+
+       
+        self.shuffleBtn.clicked.connect(self.shuffle)  # TODO icon       
+        #self.mediaPlayer.mediaStatusChanged.connect(self.shuffleMode)# appena finisce la canzone ed è in playbackmode 4 playa una canzone random
+
+        
+        
+        
+        
 
         # app.aboutToQuit.connect(self.moveEvent)
-
-    def setTitle(self):
-        self.setWindowTitle(
-            f"ti sputo fy - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
-
-    def closeEvent(self, event):
-        # retrieve position
-        xAxis = self.geometry().x()
-        yAxis = self.geometry().y()
-        
-        self.data['last_position']['xPos'] = xAxis
-        self.data['last_position']['yPos'] = yAxis
-        
-        # retrieve size
-        width = self.width()
-        height = self.height()
-        
-        self.data['last_window_size']['width'] = width
-        self.data['last_window_size']['heigth'] = height
-        
-        yaml_dump(self.data)
-
-
-
     
-    
-    
-    
-    
-    # def moveEvent(self, event):    # QMoveEvent
-    #     xAxis = event.pos().x()
-    #     yAxis = event.pos().y()
-    #     self.data['last_position']['xPos'] = xAxis
-    #     self.data['last_position']['yPos'] = yAxis
-    #     yaml_dump(self.data)
-
-        # super(Window, self).moveEvent(event)
-
-    # def resizeEvent(self, event):
-    #     width = self.width()
-    #     height = self.height()
-    #     # print(width, height)
-    #     self.data['last_window_size']['width'] = width
-    #     self.data['last_window_size']['heigth'] = height
-    #     yaml_dump(self.data)
-    #     super().resizeEvent(event)
-
-    def playlist_position_changed(self, i):
-        if i > -1:
-            ix = self.model.index(i)
-            self.playlistView.setCurrentIndex(ix)
-
-    def playlist_selection_changed(self, ix):
-        # We receive a QItemSelection from selectionChanged.
-        i = ix.indexes()[0].row()
-        self.playlist.setCurrentIndex(i)
-
-    def autoNextTrack(self):
-        if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
-            # index starts from 0       mediacount starts from 1
-            if self.playlist.currentIndex() != self.playlist.mediaCount()-1:
-                self.playlist.next()
-                self.mediaPlayer.play()
-
-    def loopMode(self):
-        if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
-            if self.playlist.playbackMode() == 3:
-                self.playlist.next()
-                self.mediaPlayer.play()
-
-    def shuffleMode(self):
-        if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
-            if self.playlist.playbackMode() == 4:
-                while self.playlist.previousIndex() == self.playlist.currentIndex():
-                    self.playlist.setCurrentIndex(
-                        random.randint(0, self.playlist.mediaCount()-1))
-
-                # ti serve sapere che è l'ultima canzone così puoi farlo ripartire
-                if self.playlist.currentIndex() == self.playlist.mediaCount()-1:
-                    while self.playlist.currentIndex() == self.playlist.mediaCount()-1:
-                        self.playlist.setCurrentIndex(
-                            random.randint(0, self.playlist.mediaCount()-1))
-                self.mediaPlayer.play()
-
-        # self.playlist.currentMediaChanged.connect(self.songChanged)
-
-    def songChanged(self, media):
-        if not media.isNull():
-            url = media.canonicalUrl()
-        print((url.fileName()))
-        # print((MP3(f"{foldername}/{url.fileName()}")).info.length)
-        songLength = round(
-            (MP3(f"E:/Download/canzoni_test2/{url.fileName()}")).info.length, 0)
-        print(f"{songLength} songLegth")
-        tempo = str(datetime.timedelta(seconds=songLength))
-        self.total_timeLabel.setText(str(tempo))  # TODO
-
-    def next(self):
-        self.playlist.next()
-
-    def previous(self):
-        self.playlist.previous()
-
-    def shuffle(self):
-        self.playlist.setPlaybackMode(4)
-
-    def loop(self):
-        self.playlist.setPlaybackMode(3)
-
-    # TODO
-    def printa(self, duration):
-        print(f"{duration} duration")
-
-    def openSecondWindow(self):
-        self.secondWindow.mostra()
-
     def open_folder(self):
         foldername = QFileDialog.getExistingDirectory(
             self, "open folder", "c:\\")
@@ -357,7 +270,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             for song in os.listdir(foldername):
                 self.playlist.addMedia(QMediaContent(
                     QUrl(f"{foldername}/{song}")))
-                # self.textBrowser.append(song.replace(".mp3", ""))
             self.playlist.setCurrentIndex(0)
             self.playBtn.setEnabled(True)
             self.playlistIsEmpty = False
@@ -376,45 +288,103 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.model.layoutChanged.emit()
             self.setTitle()
 
+    def setTitle(self):
+        self.setWindowTitle(
+            f"ti sputo fy - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
+
     def play_video(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
+            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
         else:
             self.mediaPlayer.play()
-
-    def mediastate_changed(self, state):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.playBtn.setIcon(
-                self.style().standardIcon(QStyle.SP_MediaPause))
-
-        else:
-            self.playBtn.setIcon(
-                self.style().standardIcon(QStyle.SP_MediaPlay))
-
-    def position_changed(self, position):
-        self.durationSlider.setValue(position)
+            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
     def duration_changed(self, duration):
         self.durationSlider.setRange(0, duration)
-        # self.total_timeLabel.setText(
-        #     str(datetime.timedelta(seconds=round(duration/1000))))
-        self.total_timeLabel.setText(time_format(round(duration/1000)))
+        if duration >= 0:
+            self.total_timeLabel.setText(time_format(round(duration/1000)))
 
-    def set_position(self, position):
-        self.mediaPlayer.setPosition(position)
-
-    def update_time_remaining(self, position):
+    def position_changed(self, position):
         if position >= 0:
-            # print(position/1000)  # TODO
             self.time_remainingLabel.setText(time_format((position/1000)))
-            # self.time_remainingLabel.setText(str(datetime.timedelta(seconds=round(position/1000))))
-
         # Disable the events to prevent updating triggering a setPosition event (can cause stuttering).
+        
         self.durationSlider.blockSignals(True)
         self.durationSlider.setValue(position)
         self.durationSlider.blockSignals(False)
 
+    def playlist_position_changed(self, i):
+        if i > -1:
+            ix = self.model.index(i)
+            self.playlistView.setCurrentIndex(ix)
+
+    def playlist_selection_changed(self, ix):
+        # We receive a QItemSelection from selectionChanged.
+        i = ix.indexes()[0].row()
+        self.playlist.setCurrentIndex(i)
+    
+    #TODO icon
+    def loop(self):
+        self.playlist.setPlaybackMode(3)
+
+    #TODO icon
+    def shuffle(self):
+        self.playlist.setPlaybackMode(4)
+    
+    def autoNextTrack(self):
+        
+        if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
+            if self.playlist.playbackMode() == 2:
+                # index starts from 0       mediacount starts from 1
+                if self.playlist.currentIndex() != self.playlist.mediaCount()-1:
+                    self.playlist.next()
+                    self.mediaPlayer.play()
+            
+            elif self.playlist.playbackMode() == 3:
+                self.playlist.next()
+                self.mediaPlayer.play()
+            
+            
+            
+            elif self.playlist.playbackMode() == 4:
+                # print(self.playlist.previousIndex())
+                # print(self.playlist.currentIndex())
+                while self.playlist.previousIndex() == self.playlist.currentIndex():
+                    self.playlist.setCurrentIndex(random.randint(0, self.playlist.mediaCount()-1))
+                
+                # self.mediaPlayer.play()
+                # # ti serve sapere che è l'ultima canzone così puoi farlo ripartire
+                # if self.playlist.currentIndex() == self.playlist.mediaCount()-1:
+                #     while self.playlist.currentIndex() == self.playlist.mediaCount()-1:
+                #         self.playlist.setCurrentIndex(random.randint(0, self.playlist.mediaCount()-1))
+                
+        
+    
+    
+    # def loopMode(self):
+    #     if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
+    #         if self.playlist.playbackMode() == 3:
+    #             self.playlist.next()
+    #             self.mediaPlayer.play()
+
+    
+
+    # def shuffleMode(self):
+    #     if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
+    #         if self.playlist.playbackMode() == 4:
+    #             while self.playlist.previousIndex() == self.playlist.currentIndex():
+    #                 self.playlist.setCurrentIndex(
+    #                     random.randint(0, self.playlist.mediaCount()-1))
+
+    #             # ti serve sapere che è l'ultima canzone così puoi farlo ripartire
+    #             if self.playlist.currentIndex() == self.playlist.mediaCount()-1:
+    #                 while self.playlist.currentIndex() == self.playlist.mediaCount()-1:
+    #                     self.playlist.setCurrentIndex(
+    #                         random.randint(0, self.playlist.mediaCount()-1))
+    #             self.mediaPlayer.play()
+    
     def volumeToggle(self):
         if self.i_volume == 0:
             self.mediaPlayer.setVolume(0)
@@ -441,6 +411,42 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.i_volume = 0
             self.volumeBtn.setIcon(
                 self.style().standardIcon(QStyle.SP_MediaVolume))
+    
+    def closeEvent(self, event):
+        # retrieve position
+        xAxis = self.geometry().x()
+        yAxis = self.geometry().y()
+        
+        self.data['last_position']['xPos'] = xAxis
+        self.data['last_position']['yPos'] = yAxis
+        
+        # retrieve size
+        width = self.width()
+        height = self.height()
+        
+        self.data['last_window_size']['width'] = width
+        self.data['last_window_size']['heigth'] = height
+        
+        yaml_dump(self.data)
+
+    
+
+    
+
+        # self.playlist.currentMediaChanged.connect(self.songChanged)
+
+
+    
+
+    
+
+
+    
+
+    
+
+
+    
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

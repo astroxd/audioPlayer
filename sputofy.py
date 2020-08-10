@@ -20,10 +20,8 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-
-        # self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
-        # self.textBrowser.setGeometry(QtCore.QRect(55, 11, 551, 211))
-        # self.textBrowser.setObjectName("textBrowser")
+        
+        
 
 
         self.durationSlider = QtWidgets.QSlider(self.centralwidget)
