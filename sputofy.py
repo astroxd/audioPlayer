@@ -11,6 +11,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 
+from PyQt5.QtWidgets import QStyle
+from PyQt5.QtGui import QIcon
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -53,6 +56,7 @@ class Ui_MainWindow(object):
         self.volumeBtn = QtWidgets.QPushButton(self.centralwidget)
         self.volumeBtn.setObjectName("volumeBtn")
         self.horizontalLayout_3.addWidget(self.volumeBtn)
+        self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
 
         
         self.volumeSlider = QtWidgets.QSlider(self.centralwidget)
@@ -94,34 +98,28 @@ class Ui_MainWindow(object):
         loopIcon = QtGui.QIcon()
         loopIcon.addPixmap(QtGui.QPixmap("audioPlayer/res/loopIconOFF.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.loopBtn.setIcon(loopIcon)
-        # self.loopBtn.setIconSize(QtCore.QSize(18, 18))
         self.loopBtn.setObjectName("loopBtn")
         self.horizontalLayout.addWidget(self.loopBtn)
-        # spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        # self.horizontalLayout.addItem(spacerItem4)
 
 
         self.prevBtn = QtWidgets.QPushButton(self.centralwidget)
         self.prevBtn.setObjectName("prevBtn")
         self.horizontalLayout.addWidget(self.prevBtn)
-        # spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        # self.horizontalLayout.addItem(spacerItem5)
+        self.prevBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
 
 
         self.playBtn = QtWidgets.QPushButton(self.centralwidget)
         self.playBtn.setObjectName("playBtn")
         self.horizontalLayout.addWidget(self.playBtn)
-        # spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        # self.horizontalLayout.addItem(spacerItem6)
+        self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
 
         self.nextBtn = QtWidgets.QPushButton(self.centralwidget)
         self.nextBtn.setObjectName("nextBtn")
         self.horizontalLayout.addWidget(self.nextBtn)
-        # spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        # self.horizontalLayout.addItem(spacerItem7)
+        self.nextBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekForward))
 
-
+        
         self.randomBtn = QtWidgets.QPushButton(self.centralwidget)
         randomIcon = QtGui.QIcon()
         randomIcon.addPixmap(QtGui.QPixmap("audioPlayer/res/randomIconOFF.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -131,9 +129,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.randomBtn)
 
         
-
-
-
 
         self.gridLayout_2.addLayout(self.horizontalLayout, 1, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -179,132 +174,11 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuSong.menuAction())
         
         
-        # MainWindow.setCentralWidget(self.centralwidget)
-
-
-        # self.menubar = QtWidgets.QMenuBar(MainWindow)
-        # self.menubar.setGeometry(QtCore.QRect(0, 0, 675, 21))
-        # self.menubar.setObjectName("menubar")
-        # MainWindow.setMenuBar(self.menubar)
-
-
-        # self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        # self.statusbar.setObjectName("statusbar")
-        # MainWindow.setStatusBar(self.statusbar)
+        
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        # MainWindow.setObjectName("MainWindow")
-        # MainWindow.resize(663, 430)
-        # self.centralwidget = QtWidgets.QWidget(MainWindow)
-        # self.centralwidget.setObjectName("centralwidget")
-
         
-        
-
-
-        # self.durationSlider = QtWidgets.QSlider(self.centralwidget)
-        # self.durationSlider.setGeometry(QtCore.QRect(60, 310, 351, 22))
-        # self.durationSlider.setOrientation(QtCore.Qt.Horizontal)
-        # self.durationSlider.setRange(0,0)
-        # self.durationSlider.setObjectName("durationSlider")
-
-
-        # self.playBtn = QtWidgets.QPushButton(self.centralwidget)
-        # self.playBtn.setGeometry(QtCore.QRect(320, 260, 31, 31))
-        # self.playBtn.setObjectName("playBtn")
-
-
-        # self.nextBtn = QtWidgets.QPushButton(self.centralwidget)
-        # self.nextBtn.setGeometry(QtCore.QRect(410, 260, 31, 31))
-        # self.nextBtn.setObjectName("nextBtn")
-
-
-        # self.prevBtn = QtWidgets.QPushButton(self.centralwidget)
-        # self.prevBtn.setGeometry(QtCore.QRect(230, 260, 31, 31))
-        # self.prevBtn.setObjectName("prevBtn")
-
-        # self.shuffleBtn = QtWidgets.QPushButton(self.centralwidget)
-        # # self.shuffleBtn.setGeometry(QtCore.QRect(310, 360, 160, 21))
-        # self.shuffleBtn.setObjectName("shuffleBtn")
-
-
-        # self.loopBtn = QtWidgets.QPushButton(self.centralwidget)
-        # self.loopBtn.setGeometry(QtCore.QRect(180, 360, 160, 21))
-        # self.loopBtn.setObjectName("loopBtn")
-
-
-
-        # self.volumeSlider = QtWidgets.QSlider(self.centralwidget)
-        # self.volumeSlider.setGeometry(QtCore.QRect(500, 310, 101, 22))
-        # self.volumeSlider.setOrientation(QtCore.Qt.Horizontal)
-        # self.volumeSlider.setMaximum(100)
-        # self.volumeSlider.setObjectName("volumeSlider")
-
-
-        # self.volumeBtn = QtWidgets.QPushButton(self.centralwidget)
-        # self.volumeBtn.setGeometry(QtCore.QRect(470, 310, 21, 23))
-        # self.volumeBtn.setObjectName("volumeBtn")
-
-
-        # self.time_remainingLabel = QtWidgets.QLabel(self.centralwidget)
-        # self.time_remainingLabel.setGeometry(QtCore.QRect(19, 310, 31, 20))
-        # self.time_remainingLabel.setObjectName("time_remainingLabel")
-
-
-        # self.total_timeLabel = QtWidgets.QLabel(self.centralwidget)
-        # self.total_timeLabel.setGeometry(QtCore.QRect(420, 310, 31, 21))
-        # # self.total_timeLabel.setGeometry(QtCore.QRect(310, 360, 160, 21)) #TODO
-        # self.total_timeLabel.setObjectName("total_timeLabel")
-
-
-        # MainWindow.setCentralWidget(self.centralwidget)
-        # self.menubar = QtWidgets.QMenuBar(MainWindow)
-        # self.menubar.setGeometry(QtCore.QRect(0, 0, 663, 21))
-        # self.menubar.setObjectName("menubar")
-
-
-        # self.menuFile = QtWidgets.QMenu(self.menubar)
-        # self.menuFile.setObjectName("menuFile")
-
-
-        # MainWindow.setMenuBar(self.menubar)
-        # self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        # self.statusbar.setObjectName("statusbar")
-
-
-        # MainWindow.setStatusBar(self.statusbar)
-        # self.actionOpen_File = QtWidgets.QAction(MainWindow)
-        # self.actionOpen_File.setObjectName("actionOpen_File")
-
-
-        # self.actionOpen_Folder = QtWidgets.QAction(MainWindow)
-        # self.actionOpen_Folder.setObjectName("actionOpen_Folder")
-
-        # self.actionOpenSecondWindow = QtWidgets.QAction(MainWindow)
-        # self.actionOpenSecondWindow.setObjectName("actionOpenSecondWindow")
-
-
-        # self.menuFile.addAction(self.actionOpen_File)
-        # self.menuFile.addAction(self.actionOpen_Folder)
-        # self.menuFile.addAction(self.actionOpenSecondWindow)
-        # self.menubar.addAction(self.menuFile.menuAction())
-
-
-        # #TODO
-
-        # self.playlistView = QtWidgets.QListView(self.centralwidget)
-        # self.playlistView.setGeometry(QtCore.QRect(55, 11, 551, 211))
-        # self.playlistView.setAcceptDrops(True)
-        # self.playlistView.setProperty("showDropIndicator", True)
-        # # self.playlistView.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly)
-        # self.playlistView.setAlternatingRowColors(True)
-        # self.playlistView.setUniformItemSizes(True)
-        # self.playlistView.setObjectName("playlistView")
-
-
-        # self.retranslateUi(MainWindow)
-        # QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -321,3 +195,5 @@ class Ui_MainWindow(object):
         self.actionOpen_File.setText(_translate("MainWindow", "Open File"))
         self.actionOpen_Folder.setText(_translate("MainWindow", "Open Folder"))
         self.actionOpenSecondWindow.setText(_translate("MainWindow","Open Second Window"))
+        self.menuSong.setTitle(_translate("MainWindo", "Song"))
+        self.actionLoopIt.setText(_translate("MainWindow", "Loop it: OFF"))
