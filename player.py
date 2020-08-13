@@ -1,7 +1,7 @@
 
 from __future__ import unicode_literals
 
-import datetime #in teoria l'ho rimosso creando la funzione time_format()#TODO
+import datetime  # in teoria l'ho rimosso creando la funzione time_format()#TODO
 import os
 import random
 import sys
@@ -11,7 +11,7 @@ import youtube_dl
 from mutagen.mp3 import MP3
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QAbstractListModel, Qt, QTimer, QUrl
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimedia import (QMediaContent, QMediaPlayer,
                                 QMediaPlayerControl, QMediaPlaylist)
@@ -21,15 +21,6 @@ from PyQt5.QtWidgets import (QFileDialog, QHBoxLayout, QLineEdit, QMainWindow,
 
 from SecondWindow import Ui_Dialog
 from sputofy import Ui_MainWindow
-
-def hhmmss(ms):
-    # s = 1000
-    # m = 60000
-    # h = 360000
-    h, r = divmod(ms, 36000)
-    m, r = divmod(r, 60000)
-    s, _ = divmod(r, 1000)
-    return ("%d:%02d:%02d" % (h,m,s)) if h else ("%d:%02d" % (m,s))
 
 
 def time_format(seconds):
@@ -188,6 +179,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.durationSlider.sliderMoved.connect(self.mediaPlayer.setPosition)
         
         # se muovi lo slider il video va avanti
+        self.durationSlider.setEnabled(False)
         self.durationSlider.valueChanged.connect(self.mediaPlayer.setPosition)
 
         
@@ -251,13 +243,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.mediaPlayer.mediaStatusChanged.connect(self.loopMode)# appena finisce la canzone ed è in playbackmode 3 play la successiva
 
        
-        self.shuffleBtn.clicked.connect(self.shuffle)  # TODO icon       
+        self.randomBtn.clicked.connect(self.random)  # TODO icon       
         #self.mediaPlayer.mediaStatusChanged.connect(self.shuffleMode)# appena finisce la canzone ed è in playbackmode 4 playa una canzone random
 
         
-        
-        
-        
+        self.playlist.playbackModeChanged.connect(self.playbackModeIcon)
+    
+
 
         # app.aboutToQuit.connect(self.moveEvent)
     
@@ -272,6 +264,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     QUrl(f"{foldername}/{song}")))
             self.playlist.setCurrentIndex(0)
             self.playBtn.setEnabled(True)
+            self.durationSlider.setEnabled(True)
             self.playlistIsEmpty = False
             self.model.layoutChanged.emit()
             self.setTitle()
@@ -285,6 +278,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.playlistIsEmpty = True
             self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(filename)))
             self.playBtn.setEnabled(True)
+            self.durationSlider.setEnabled(True)
             self.model.layoutChanged.emit()
             self.setTitle()
 
@@ -325,14 +319,41 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         i = ix.indexes()[0].row()
         self.playlist.setCurrentIndex(i)
     
-    #TODO icon
     def loop(self):
-        self.playlist.setPlaybackMode(3)
+        loopIcon = QIcon()
+        if self.playlist.playbackMode() != 3:
+            self.playlist.setPlaybackMode(3)
+            loopIcon.addPixmap(QPixmap("audioPlayer/res/loopIconON.svg"), QIcon.Normal)
+        else:
+            self.playlist.setPlaybackMode(2)
+            loopIcon.addPixmap(QPixmap("audioPlayer/res/loopIconOFF.svg"), QIcon.Normal)
+        self.loopBtn.setIcon(loopIcon)
+            
+            
 
-    #TODO icon
-    def shuffle(self):
-        self.playlist.setPlaybackMode(4)
-    
+    def random(self):
+        randomIcon = QIcon()
+        if self.playlist.playbackMode() != 4:
+            self.playlist.setPlaybackMode(4)
+            randomIcon.addPixmap(QPixmap("audioPlayer/res/randomIconON.svg"), QIcon.Normal)
+
+        else:
+            self.playlist.setPlaybackMode(2)
+            randomIcon.addPixmap(QPixmap("audioPlayer/res/randomIconOFF.svg"), QIcon.Normal)
+        self.randomBtn.setIcon(randomIcon)
+
+    def playbackModeIcon(self, playbackMode):
+        print(f"playbackMode {playbackMode}\n")#TODO 
+        if playbackMode == 3:
+            randomIcon = QIcon()
+            randomIcon.addPixmap(QPixmap("audioPlayer/res/randomIconOFF.svg"), QIcon.Normal)
+            self.randomBtn.setIcon(randomIcon)
+        
+        elif playbackMode == 4:
+            loopIcon = QIcon()
+            loopIcon.addPixmap(QPixmap("audioPlayer/res/loopIconOFF.svg"), QIcon.Normal)
+            self.loopBtn.setIcon(loopIcon)
+
     def autoNextTrack(self):
         
         if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
@@ -349,16 +370,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             
             
             elif self.playlist.playbackMode() == 4:
-                # print(self.playlist.previousIndex())
-                # print(self.playlist.currentIndex())
                 while self.playlist.previousIndex() == self.playlist.currentIndex():
                     self.playlist.setCurrentIndex(random.randint(0, self.playlist.mediaCount()-1))
                 
-                # self.mediaPlayer.play()
-                # # ti serve sapere che è l'ultima canzone così puoi farlo ripartire
-                # if self.playlist.currentIndex() == self.playlist.mediaCount()-1:
-                #     while self.playlist.currentIndex() == self.playlist.mediaCount()-1:
-                #         self.playlist.setCurrentIndex(random.randint(0, self.playlist.mediaCount()-1))
                 
         
     
@@ -435,25 +449,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # self.playlist.currentMediaChanged.connect(self.songChanged)
 
-
-    
-
-    
-
-
-    
-
-    
-
-
-    
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
 
     window = Window()
     window.show()
-    config(window.height(), window.width())  # TODO
+    config(window.height(), window.width())
 
     sys.exit(app.exec_())

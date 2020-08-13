@@ -16,70 +16,129 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(663, 430)
+        MainWindow.resize(675, 626)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-        
-        
+
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout_2.setObjectName("gridLayout_2")
 
 
-        self.durationSlider = QtWidgets.QSlider(self.centralwidget)
-        self.durationSlider.setGeometry(QtCore.QRect(60, 310, 351, 22))
-        self.durationSlider.setOrientation(QtCore.Qt.Horizontal)
-        self.durationSlider.setRange(0,0)
-        self.durationSlider.setObjectName("durationSlider")
+        self.playlistView = QtWidgets.QListView(self.centralwidget)
+        self.playlistView.setAcceptDrops(True)
+        self.playlistView.setProperty("showDropIndicator", True)
+        self.playlistView.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly)
+        self.playlistView.setAlternatingRowColors(True)
+        self.playlistView.setUniformItemSizes(True)
+        self.playlistView.setObjectName("playlistView")
+        self.gridLayout_2.addWidget(self.playlistView, 0, 0, 1, 1)
 
 
-        self.playBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.playBtn.setGeometry(QtCore.QRect(320, 260, 31, 31))
-        self.playBtn.setObjectName("playBtn")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setContentsMargins(-1, 6, -1, -1)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
 
 
-        self.nextBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.nextBtn.setGeometry(QtCore.QRect(410, 260, 31, 31))
-        self.nextBtn.setObjectName("nextBtn")
-
-
-        self.prevBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.prevBtn.setGeometry(QtCore.QRect(230, 260, 31, 31))
-        self.prevBtn.setObjectName("prevBtn")
-
-        self.shuffleBtn = QtWidgets.QPushButton(self.centralwidget)
-        # self.shuffleBtn.setGeometry(QtCore.QRect(310, 360, 160, 21))
-        self.shuffleBtn.setObjectName("shuffleBtn")
-
-
-        self.loopBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.loopBtn.setGeometry(QtCore.QRect(180, 360, 160, 21))
-        self.loopBtn.setObjectName("loopBtn")
-
-
-
-        self.volumeSlider = QtWidgets.QSlider(self.centralwidget)
-        self.volumeSlider.setGeometry(QtCore.QRect(500, 310, 101, 22))
-        self.volumeSlider.setOrientation(QtCore.Qt.Horizontal)
-        self.volumeSlider.setMaximum(100)
-        self.volumeSlider.setObjectName("volumeSlider")
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem1)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem2)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem3)
 
 
         self.volumeBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.volumeBtn.setGeometry(QtCore.QRect(470, 310, 21, 23))
         self.volumeBtn.setObjectName("volumeBtn")
+        self.horizontalLayout_3.addWidget(self.volumeBtn)
+
+        
+        self.volumeSlider = QtWidgets.QSlider(self.centralwidget)
+        self.volumeSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.volumeSlider.setObjectName("volumeSlider")
+        self.horizontalLayout_3.addWidget(self.volumeSlider)
+
+
+        self.gridLayout_2.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
+
+
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setContentsMargins(-1, 6, -1, -1)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
 
 
         self.time_remainingLabel = QtWidgets.QLabel(self.centralwidget)
-        self.time_remainingLabel.setGeometry(QtCore.QRect(19, 310, 31, 20))
         self.time_remainingLabel.setObjectName("time_remainingLabel")
+        self.horizontalLayout_2.addWidget(self.time_remainingLabel)
+
+
+        self.durationSlider = QtWidgets.QSlider(self.centralwidget)
+        self.durationSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.durationSlider.setObjectName("durationSlider")
+        self.horizontalLayout_2.addWidget(self.durationSlider)
 
 
         self.total_timeLabel = QtWidgets.QLabel(self.centralwidget)
-        self.total_timeLabel.setGeometry(QtCore.QRect(420, 310, 31, 21))
-        # self.total_timeLabel.setGeometry(QtCore.QRect(310, 360, 160, 21)) #TODO
         self.total_timeLabel.setObjectName("total_timeLabel")
+        self.horizontalLayout_2.addWidget(self.total_timeLabel)
 
 
+        self.gridLayout_2.addLayout(self.horizontalLayout_2, 2, 0, 1, 1)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+
+
+        self.loopBtn = QtWidgets.QPushButton(self.centralwidget)
+        loopIcon = QtGui.QIcon()
+        loopIcon.addPixmap(QtGui.QPixmap("audioPlayer/res/loopIconOFF.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.loopBtn.setIcon(loopIcon)
+        # self.loopBtn.setIconSize(QtCore.QSize(18, 18))
+        self.loopBtn.setObjectName("loopBtn")
+        self.horizontalLayout.addWidget(self.loopBtn)
+        # spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.horizontalLayout.addItem(spacerItem4)
+
+
+        self.prevBtn = QtWidgets.QPushButton(self.centralwidget)
+        self.prevBtn.setObjectName("prevBtn")
+        self.horizontalLayout.addWidget(self.prevBtn)
+        # spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.horizontalLayout.addItem(spacerItem5)
+
+
+        self.playBtn = QtWidgets.QPushButton(self.centralwidget)
+        self.playBtn.setObjectName("playBtn")
+        self.horizontalLayout.addWidget(self.playBtn)
+        # spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.horizontalLayout.addItem(spacerItem6)
+
+
+        self.nextBtn = QtWidgets.QPushButton(self.centralwidget)
+        self.nextBtn.setObjectName("nextBtn")
+        self.horizontalLayout.addWidget(self.nextBtn)
+        # spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.horizontalLayout.addItem(spacerItem7)
+
+
+        self.randomBtn = QtWidgets.QPushButton(self.centralwidget)
+        randomIcon = QtGui.QIcon()
+        randomIcon.addPixmap(QtGui.QPixmap("audioPlayer/res/randomIconOFF.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.randomBtn.setIcon(randomIcon)
+        self.randomBtn.setIconSize(QtCore.QSize(18, 18))
+        self.randomBtn.setObjectName("randomBtn")
+        self.horizontalLayout.addWidget(self.randomBtn)
+
+        
+
+
+
+
+        self.gridLayout_2.addLayout(self.horizontalLayout, 1, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
+        
+        
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 663, 21))
         self.menubar.setObjectName("menubar")
@@ -88,6 +147,8 @@ class Ui_MainWindow(object):
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
 
+        self.menuSong = QtWidgets.QMenu(self.menubar)
+        self.menuSong.setObjectName("menuSong")
 
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -105,27 +166,145 @@ class Ui_MainWindow(object):
         self.actionOpenSecondWindow = QtWidgets.QAction(MainWindow)
         self.actionOpenSecondWindow.setObjectName("actionOpenSecondWindow")
 
+        self.actionLoopIt = QtWidgets.QAction(MainWindow)
+        self.actionLoopIt.setObjectName("actionLoopIt")
+
 
         self.menuFile.addAction(self.actionOpen_File)
         self.menuFile.addAction(self.actionOpen_Folder)
         self.menuFile.addAction(self.actionOpenSecondWindow)
         self.menubar.addAction(self.menuFile.menuAction())
 
+        self.menuSong.addAction(self.actionLoopIt)
+        self.menubar.addAction(self.menuSong.menuAction())
+        
+        
+        # MainWindow.setCentralWidget(self.centralwidget)
 
-        #TODO
 
-        self.playlistView = QtWidgets.QListView(self.centralwidget)
-        self.playlistView.setGeometry(QtCore.QRect(55, 11, 551, 211))
-        self.playlistView.setAcceptDrops(True)
-        self.playlistView.setProperty("showDropIndicator", True)
-        # self.playlistView.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly)
-        self.playlistView.setAlternatingRowColors(True)
-        self.playlistView.setUniformItemSizes(True)
-        self.playlistView.setObjectName("playlistView")
+        # self.menubar = QtWidgets.QMenuBar(MainWindow)
+        # self.menubar.setGeometry(QtCore.QRect(0, 0, 675, 21))
+        # self.menubar.setObjectName("menubar")
+        # MainWindow.setMenuBar(self.menubar)
 
+
+        # self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        # self.statusbar.setObjectName("statusbar")
+        # MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        # MainWindow.setObjectName("MainWindow")
+        # MainWindow.resize(663, 430)
+        # self.centralwidget = QtWidgets.QWidget(MainWindow)
+        # self.centralwidget.setObjectName("centralwidget")
+
+        
+        
+
+
+        # self.durationSlider = QtWidgets.QSlider(self.centralwidget)
+        # self.durationSlider.setGeometry(QtCore.QRect(60, 310, 351, 22))
+        # self.durationSlider.setOrientation(QtCore.Qt.Horizontal)
+        # self.durationSlider.setRange(0,0)
+        # self.durationSlider.setObjectName("durationSlider")
+
+
+        # self.playBtn = QtWidgets.QPushButton(self.centralwidget)
+        # self.playBtn.setGeometry(QtCore.QRect(320, 260, 31, 31))
+        # self.playBtn.setObjectName("playBtn")
+
+
+        # self.nextBtn = QtWidgets.QPushButton(self.centralwidget)
+        # self.nextBtn.setGeometry(QtCore.QRect(410, 260, 31, 31))
+        # self.nextBtn.setObjectName("nextBtn")
+
+
+        # self.prevBtn = QtWidgets.QPushButton(self.centralwidget)
+        # self.prevBtn.setGeometry(QtCore.QRect(230, 260, 31, 31))
+        # self.prevBtn.setObjectName("prevBtn")
+
+        # self.shuffleBtn = QtWidgets.QPushButton(self.centralwidget)
+        # # self.shuffleBtn.setGeometry(QtCore.QRect(310, 360, 160, 21))
+        # self.shuffleBtn.setObjectName("shuffleBtn")
+
+
+        # self.loopBtn = QtWidgets.QPushButton(self.centralwidget)
+        # self.loopBtn.setGeometry(QtCore.QRect(180, 360, 160, 21))
+        # self.loopBtn.setObjectName("loopBtn")
+
+
+
+        # self.volumeSlider = QtWidgets.QSlider(self.centralwidget)
+        # self.volumeSlider.setGeometry(QtCore.QRect(500, 310, 101, 22))
+        # self.volumeSlider.setOrientation(QtCore.Qt.Horizontal)
+        # self.volumeSlider.setMaximum(100)
+        # self.volumeSlider.setObjectName("volumeSlider")
+
+
+        # self.volumeBtn = QtWidgets.QPushButton(self.centralwidget)
+        # self.volumeBtn.setGeometry(QtCore.QRect(470, 310, 21, 23))
+        # self.volumeBtn.setObjectName("volumeBtn")
+
+
+        # self.time_remainingLabel = QtWidgets.QLabel(self.centralwidget)
+        # self.time_remainingLabel.setGeometry(QtCore.QRect(19, 310, 31, 20))
+        # self.time_remainingLabel.setObjectName("time_remainingLabel")
+
+
+        # self.total_timeLabel = QtWidgets.QLabel(self.centralwidget)
+        # self.total_timeLabel.setGeometry(QtCore.QRect(420, 310, 31, 21))
+        # # self.total_timeLabel.setGeometry(QtCore.QRect(310, 360, 160, 21)) #TODO
+        # self.total_timeLabel.setObjectName("total_timeLabel")
+
+
+        # MainWindow.setCentralWidget(self.centralwidget)
+        # self.menubar = QtWidgets.QMenuBar(MainWindow)
+        # self.menubar.setGeometry(QtCore.QRect(0, 0, 663, 21))
+        # self.menubar.setObjectName("menubar")
+
+
+        # self.menuFile = QtWidgets.QMenu(self.menubar)
+        # self.menuFile.setObjectName("menuFile")
+
+
+        # MainWindow.setMenuBar(self.menubar)
+        # self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        # self.statusbar.setObjectName("statusbar")
+
+
+        # MainWindow.setStatusBar(self.statusbar)
+        # self.actionOpen_File = QtWidgets.QAction(MainWindow)
+        # self.actionOpen_File.setObjectName("actionOpen_File")
+
+
+        # self.actionOpen_Folder = QtWidgets.QAction(MainWindow)
+        # self.actionOpen_Folder.setObjectName("actionOpen_Folder")
+
+        # self.actionOpenSecondWindow = QtWidgets.QAction(MainWindow)
+        # self.actionOpenSecondWindow.setObjectName("actionOpenSecondWindow")
+
+
+        # self.menuFile.addAction(self.actionOpen_File)
+        # self.menuFile.addAction(self.actionOpen_Folder)
+        # self.menuFile.addAction(self.actionOpenSecondWindow)
+        # self.menubar.addAction(self.menuFile.menuAction())
+
+
+        # #TODO
+
+        # self.playlistView = QtWidgets.QListView(self.centralwidget)
+        # self.playlistView.setGeometry(QtCore.QRect(55, 11, 551, 211))
+        # self.playlistView.setAcceptDrops(True)
+        # self.playlistView.setProperty("showDropIndicator", True)
+        # # self.playlistView.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly)
+        # self.playlistView.setAlternatingRowColors(True)
+        # self.playlistView.setUniformItemSizes(True)
+        # self.playlistView.setObjectName("playlistView")
+
+
+        # self.retranslateUi(MainWindow)
+        # QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -133,8 +312,8 @@ class Ui_MainWindow(object):
         self.playBtn.setText(_translate("MainWindow", ""))
         self.nextBtn.setText(_translate("MainWindow", ""))
         self.prevBtn.setText(_translate("MainWindow", ""))
-        self.shuffleBtn.setText(_translate("MainWindow","5"))
-        self.loopBtn.setText(_translate("MainWindow", "6"))
+        self.randomBtn.setText(_translate("MainWindow",""))
+        self.loopBtn.setText(_translate("MainWindow", ""))
         self.volumeBtn.setText(_translate("MainWindow", ""))
         self.time_remainingLabel.setText(_translate("MainWindow", "00:00"))
         self.total_timeLabel.setText(_translate("MainWindow", "00:00"))
