@@ -205,9 +205,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # volumeSlider
         self.volumeSlider.setProperty("value", 100)
         self.volumeSlider.setRange(0, 100)
-        self.volumeSlider.setValue(self.data['volume'])#TODO maybe in config?
-        self.volumeLabel.setText(f"{self.data['volume']}%")
-        self.volumeSlider.valueChanged.connect(self.setVolume)# set mediaPlayer volume using the value took from the slider
+        self.volumeSlider.setValue(self.data['volume'] if self.data['volume']!=0 else self.data['volume']+1)#TODO maybe in config?
+        self.volumeLabel.setText(f"{self.data['volume']}%" if self.data['volume']!=0 else f"{self.data['volume']+1}%")
+        #self.volumeSlider.valueChanged.connect(self.setVolume)# set mediaPlayer volume using the value took from the slider
         
         QShortcut('Up', self, lambda:self.volumeSlider.setValue(self.volumeSlider.value()+1))
         QShortcut('Down', self, lambda:self.volumeSlider.setValue(self.volumeSlider.value()-1))
@@ -219,8 +219,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
 
         # volumeBtn
-        self.volumeBtn.clicked.connect(self.volumeToggle)# change btn icon using mediaPlayer volume and volume slider movements
-        self.i_volume = 0
+        #self.volumeBtn.clicked.connect(self.volumeToggle)# change btn icon using mediaPlayer volume and volume slider movements
+        # self.i_volume = 0
+        self.isMuted = False
+        self.previousVolume = self.data['volume']
 
 
 
@@ -272,7 +274,34 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.randomBtn.clicked.connect(self.random)# (4) play random song without end
         QShortcut('R', self, lambda:self.random())
         
+        self.mediaPlayer.volumeChanged.connect(self.test)
+        self.volumeSlider.valueChanged.connect(self.mediaPlayer.setVolume)
+        self.volumeBtn.clicked.connect(self.bottone)
+        
+    def test(self, volume):
+        self.volumeLabel.setText(f"{volume}%")
+        if volume != 0:
+            self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+            self.previousVolume = self.volumeSlider.value()
+            self.isMuted = False
+        else:
+            self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolumeMuted))
+            self.isMuted = True
     
+    def bottone(self):
+        if self.isMuted == False:
+            self.volumeSlider.setValue(0)
+            self.isMuted = True
+        elif self.isMuted == True:
+            
+            if self.previousVolume == 0:
+                self.volumeSlider.setValue(10)
+            else: 
+                self.volumeSlider.setValue(self.previousVolume)
+            self.isMuted = False
+
+
+
     def open_folder(self):
         foldername = QFileDialog.getExistingDirectory(self, "Open folder", "c:\\")
 
@@ -415,40 +444,40 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.playlist.setCurrentIndex(random.randint(0, self.playlist.mediaCount()-1))
 
 #=======================================================#               
-    def volumeToggle(self):
-        if self.i_volume == 0:
+    # def volumeToggle(self):
+    #     if self.i_volume == 0:
 
-            self.mediaPlayer.setVolume(0)
-            self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolumeMuted))
+    #         self.mediaPlayer.setVolume(0)
+    #         self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolumeMuted))
 
-            self.i_volume = 1
+    #         self.i_volume = 1
 
-        elif self.i_volume == 1:
+    #     elif self.i_volume == 1:
 
-            if self.volumeSlider.value() == 0:
+    #         if self.volumeSlider.value() == 0:
 
-                self.volumeSlider.setValue(10)
-                self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+    #             self.volumeSlider.setValue(10)
+    #             self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
             
-            else:
+    #         else:
 
-                self.mediaPlayer.setVolume(self.volumeSlider.value())
-                self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
-            self.i_volume = 0
+    #             self.mediaPlayer.setVolume(self.volumeSlider.value())
+    #             self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+    #         self.i_volume = 0
 
-    def setVolume(self):
-        self.mediaPlayer.setVolume(self.volumeSlider.value())
-        self.volumeLabel.setText(f"{self.mediaPlayer.volume()}%")
+    # def setVolume(self):
+    #     self.mediaPlayer.setVolume(self.volumeSlider.value())
+    #     self.volumeLabel.setText(f"{self.mediaPlayer.volume()}%")
         
-        if self.volumeSlider.value() == 0:
+    #     if self.volumeSlider.value() == 0:
 
-            self.i_volume = 0
-            self.volumeToggle()
+    #         self.i_volume = 0
+    #         self.volumeToggle()
 
-        else:
+    #     else:
 
-            self.i_volume = 0
-            self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+    #         self.i_volume = 0
+    #         self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
     
     def closeEvent(self, event): #event handler that take window information and save it in config before the window close
         # retrieve position
