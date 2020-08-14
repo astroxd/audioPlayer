@@ -61,6 +61,7 @@ class Ui_MainWindow(object):
         
         self.volumeSlider = QtWidgets.QSlider(self.centralwidget)
         self.volumeSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.volumeSlider.setFocusPolicy(QtCore.Qt.TabFocus)
         self.volumeSlider.setObjectName("volumeSlider")
         self.horizontalLayout_3.addWidget(self.volumeSlider)
 
@@ -80,6 +81,7 @@ class Ui_MainWindow(object):
 
         self.durationSlider = QtWidgets.QSlider(self.centralwidget)
         self.durationSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.durationSlider.setFocusPolicy(QtCore.Qt.TabFocus)
         self.durationSlider.setObjectName("durationSlider")
         self.horizontalLayout_2.addWidget(self.durationSlider)
 
@@ -183,17 +185,34 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+
         self.playBtn.setText(_translate("MainWindow", ""))
         self.nextBtn.setText(_translate("MainWindow", ""))
         self.prevBtn.setText(_translate("MainWindow", ""))
         self.randomBtn.setText(_translate("MainWindow",""))
         self.loopBtn.setText(_translate("MainWindow", ""))
         self.volumeBtn.setText(_translate("MainWindow", ""))
+
+
         self.time_remainingLabel.setText(_translate("MainWindow", "00:00"))
         self.total_timeLabel.setText(_translate("MainWindow", "00:00"))
+
+
         self.menuFile.setTitle(_translate("MainWindow", "File"))
+
         self.actionOpen_File.setText(_translate("MainWindow", "Open File"))
+        self.actionOpen_File.setShortcut(_translate("MainWindow", "Ctrl+O"))
+
+
         self.actionOpen_Folder.setText(_translate("MainWindow", "Open Folder"))
+        self.actionOpen_Folder.setShortcut(_translate("MainWindow", "Ctrl+F"))
+
+
         self.actionOpenSecondWindow.setText(_translate("MainWindow","Open Second Window"))
+        self.actionOpenSecondWindow.setShortcut(_translate("MainWindow", "Ctrl+T"))
+
+
         self.menuSong.setTitle(_translate("MainWindo", "Song"))
+
         self.actionLoopIt.setText(_translate("MainWindow", "Loop it: OFF"))
+        self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+Alt+L"))

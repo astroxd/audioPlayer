@@ -11,13 +11,13 @@ import youtube_dl
 from mutagen.mp3 import MP3
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QAbstractListModel, Qt, QTimer, QUrl
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QKeySequence
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimedia import (QMediaContent, QMediaPlayer,
                                 QMediaPlayerControl, QMediaPlaylist)
 from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtWidgets import (QFileDialog, QHBoxLayout, QLineEdit, QMainWindow,
-                             QPushButton, QStyle, QVBoxLayout)
+                             QPushButton, QStyle, QVBoxLayout, QShortcut)
 
 from SecondWindow import Ui_Dialog
 from sputofy import Ui_MainWindow
@@ -88,6 +88,7 @@ class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
 
     def mostra(self):
         self.show()
+        
 
     def openDownloadFolder(self):
         downloadFolderName = QFileDialog.getExistingDirectory(
@@ -120,7 +121,10 @@ class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
         }
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([YTlink])
+            try:
+                ydl.download([YTlink])
+            except:
+                print("insert a valid url")
 
             # gettin id and title of song(don't need)
             # info_dict = ydl.extract_info(YTlink)
@@ -137,6 +141,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # load ui
         self.setupUi(self)
+        
         self.setWindowTitle("ti sputo fy")
 
         # "libary"
@@ -171,20 +176,38 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # play button
         self.playBtn.setEnabled(False)
         self.playBtn.clicked.connect(self.play_video)# when btn is pressed: if it is playing it pause and change icon, if it is paused it play and change icon
+        QShortcut('Space', self, lambda:self.play_video())
+        # QShortcut(QKeySequence("Space"), self).activated.connect(self.play_video)metodo da ricordare in caso di problemi #TODO
 
+        
+        
         
 
         
         
         # duration slider
         self.durationSlider.setEnabled(False)
+        self.durationSliderMaxValue = 0
         self.durationSlider.valueChanged.connect(self.mediaPlayer.setPosition)# set mediaPlayer position using the value took from the slider
+        QShortcut('Right', self, lambda:self.durationSlider.setValue(self.durationSlider.value()+10000))# 1s = 1000ms
+        QShortcut('Left', self, lambda:self.durationSlider.setValue(self.durationSlider.value()-10000))# 1s = 1000ms
 
-        
+
+        QShortcut('Shift+Right', self, lambda:self.durationSlider.setValue(self.durationSliderMaxValue-1000))
+        QShortcut('Shift+Left', self, lambda:self.durationSlider.setValue(0))
+
         
         # volumeSlider
         self.volumeSlider.setProperty("value", 100)
         self.volumeSlider.valueChanged.connect(self.setVolume)# set mediaPlayer volume using the value took from the slider
+        QShortcut('Up', self, lambda:self.volumeSlider.setValue(self.volumeSlider.value()+1))
+        QShortcut('Down', self, lambda:self.volumeSlider.setValue(self.volumeSlider.value()-1))
+
+        QShortcut('Shift+Up', self, lambda:self.volumeSlider.setValue(100))
+        QShortcut('Shift+Down', self, lambda:self.volumeSlider.setValue(0))
+
+
+        
 
         # volumeBtn
         self.volumeBtn.clicked.connect(self.volumeToggle)# change btn icon using mediaPlayer volume and volume slider movements
@@ -223,9 +246,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # playlist button
         self.nextBtn.clicked.connect(self.playlist.next)# seek track forward
-        
+        QShortcut('D', self, lambda:self.playlist.next())
+
         self.prevBtn.clicked.connect(self.playlist.previous)# seek track backward
-        
+        QShortcut('A', self, lambda:self.playlist.previous())        
 
         
         self.mediaPlayer.mediaStatusChanged.connect(self.autoNextTrack)# once song is ended seek track forward and play it
@@ -234,12 +258,20 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionLoopIt.triggered.connect(self.loopSong)# (1) loop the same song
         
         self.loopBtn.clicked.connect(self.loop)# (3) loop the playlist  
+        QShortcut('L', self, lambda:self.loop())
         
-        self.randomBtn.clicked.connect(self.random)# (4) play random song without end      
+        self.randomBtn.clicked.connect(self.random)# (4) play random song without end
+        QShortcut('R', self, lambda:self.random())
         
         self.playlist.playbackModeChanged.connect(self.playbackModeIcon)# adjust icon between playbackmode changes
 
-    
+        self.mediaPlayer.stateChanged.connect(self.cambio)
+    def cambio(self, event):
+        if event == QMediaPlayer.PlayingState:
+            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+        elif event == QMediaPlayer.PausedState:
+            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+
     
     def open_folder(self):
         foldername = QFileDialog.getExistingDirectory(self, "Open folder", "c:\\")
@@ -258,6 +290,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.model.layoutChanged.emit()
             self.setTitle()
 
+            # adjust play/pause icon
+            self.mediaPlayer.pause()
+            # self.mediaPlayer.play()
+            # self.play_video()
+           
+
     def open_file(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open Song", "c:\\")
 
@@ -272,23 +310,35 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.model.layoutChanged.emit()
             self.setTitle()
+            
+            # adjust play/pause icon
+            if self.playlist.mediaCount() == 1:
+                self.playlist.setCurrentIndex(0)
+                self.mediaPlayer.pause()
+                # self.mediaPlayer.play()
+                # self.play_video()    
+            
+            
+           
 
     def setTitle(self):
         self.setWindowTitle(f"ti sputo fy - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
 
     def play_video(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.mediaPlayer.pause()
-            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        if not self.durationSlider.isEnabled() == False: 
+            if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+                self.mediaPlayer.pause()
+                # self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
-        else:
-            self.mediaPlayer.play()
-            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+            else:
+                self.mediaPlayer.play()
+                # self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
     def duration_changed(self, duration):
         self.durationSlider.setRange(0, duration)
         if duration >= 0:
             self.total_timeLabel.setText(time_format(round(duration/1000)))
+        self.durationSliderMaxValue = duration
 
     def position_changed(self, position):
         if position >= 0:
@@ -375,7 +425,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.playlist.currentIndex() != self.playlist.mediaCount()-1:
                     self.playlist.next()
                     self.mediaPlayer.play()
-            
+                else:
+                    self.playlist.setCurrentIndex(0)
+                    self.mediaPlayer.pause()
+                    # self.mediaPlayer.play()
+                    # self.play_video()
+
             # loop playlist
             elif self.playlist.playbackMode() == 3:
                 self.playlist.next()
@@ -448,3 +503,6 @@ if __name__ == "__main__":
     config(window.height(), window.width())
 
     sys.exit(app.exec_())
+
+#TODO palette
+#TODO save custom playlist
