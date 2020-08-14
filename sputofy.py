@@ -215,4 +215,4 @@ class Ui_MainWindow(object):
         self.menuSong.setTitle(_translate("MainWindo", "Song"))
 
         self.actionLoopIt.setText(_translate("MainWindow", "Loop it: OFF"))
-        self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+Alt+L"))
+        self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+L"))

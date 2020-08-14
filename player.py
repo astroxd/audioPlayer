@@ -218,7 +218,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # media player signals
         self.mediaPlayer.durationChanged.connect(self.duration_changed)  # set range of duration slider
         self.mediaPlayer.positionChanged.connect(self.position_changed)  # duration slider progress
-        
+        self.mediaPlayer.stateChanged.connect(self.player_state)# see when it's playing or in pause 
         
         #===========================  playlist  ==============================
         
@@ -263,14 +263,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.randomBtn.clicked.connect(self.random)# (4) play random song without end
         QShortcut('R', self, lambda:self.random())
         
-        self.playlist.playbackModeChanged.connect(self.playbackModeIcon)# adjust icon between playbackmode changes
-
-        self.mediaPlayer.stateChanged.connect(self.cambio)
-    def cambio(self, event):
-        if event == QMediaPlayer.PlayingState:
-            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
-        elif event == QMediaPlayer.PausedState:
-            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        
+    
 
     
     def open_folder(self):
@@ -292,8 +286,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # adjust play/pause icon
             self.mediaPlayer.pause()
-            # self.mediaPlayer.play()
-            # self.play_video()
            
 
     def open_file(self):
@@ -315,8 +307,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.playlist.mediaCount() == 1:
                 self.playlist.setCurrentIndex(0)
                 self.mediaPlayer.pause()
-                # self.mediaPlayer.play()
-                # self.play_video()    
             
             
            
@@ -328,11 +318,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if not self.durationSlider.isEnabled() == False: 
             if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
                 self.mediaPlayer.pause()
-                # self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-
+            
             else:
                 self.mediaPlayer.play()
-                # self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
     def duration_changed(self, duration):
         self.durationSlider.setRange(0, duration)
@@ -365,58 +353,38 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.playlist.playbackMode() != 1:
 
             self.playlist.setPlaybackMode(1)
+
             self.actionLoopIt.setText("Loop it: ON")
-        
+            self.loopBtn.setIcon(QIcon("audioPlayer/res/loopIconOFF.svg"))
+            self.randomBtn.setIcon(QIcon("audioPlayer/res/randomIconOFF.svg"))
         else:
             self.playlist.setPlaybackMode(2)
             self.actionLoopIt.setText("Loop it: OFF")
     
     def loop(self):
-        loopIcon = QIcon()
         if self.playlist.playbackMode() != 3:
             self.playlist.setPlaybackMode(3)
-            loopIcon.addPixmap(QPixmap("audioPlayer/res/loopIconON.svg"), QIcon.Normal)
+
+            self.loopBtn.setIcon(QIcon("audioPlayer/res/loopIconON.svg"))
+            self.randomBtn.setIcon(QIcon("audioPlayer/res/randomIconOFF.svg"))
+            self.actionLoopIt.setText("Loop it: OFF")
+
         else:
             self.playlist.setPlaybackMode(2)
-            loopIcon.addPixmap(QPixmap("audioPlayer/res/loopIconOFF.svg"), QIcon.Normal)
-        self.loopBtn.setIcon(loopIcon)
+            self.loopBtn.setIcon(QIcon("audioPlayer/res/loopIconOFF.svg"))
             
     def random(self):
-        randomIcon = QIcon()
         if self.playlist.playbackMode() != 4:
             self.playlist.setPlaybackMode(4)
-            randomIcon.addPixmap(QPixmap("audioPlayer/res/randomIconON.svg"), QIcon.Normal)
+
+            self.randomBtn.setIcon(QIcon("audioPlayer/res/randomIconON.svg"))
+            self.loopBtn.setIcon(QIcon("audioPlayer/res/loopIconOFF.svg"))
+            self.actionLoopIt.setText("Loop it: OFF")
 
         else:
             self.playlist.setPlaybackMode(2)
-            randomIcon.addPixmap(QPixmap("audioPlayer/res/randomIconOFF.svg"), QIcon.Normal)
-        self.randomBtn.setIcon(randomIcon)
-
-    def playbackModeIcon(self, playbackMode):
-        print(f"playbackMode {playbackMode}\n")#TODO debug
-        if playbackMode == 1:
-            randomIcon = QIcon()
-            randomIcon.addPixmap(QPixmap("audioPlayer/res/randomIconOFF.svg"), QIcon.Normal)
-            self.randomBtn.setIcon(randomIcon)
-            loopIcon = QIcon()
-            loopIcon.addPixmap(QPixmap("audioPlayer/res/loopIconOFF.svg"), QIcon.Normal)
-            self.loopBtn.setIcon(loopIcon)
-
+            self.randomBtn.setIcon(QIcon("audioPlayer/res/randomIconOFF.svg"))
             
-        elif playbackMode == 3:
-            randomIcon = QIcon()
-            randomIcon.addPixmap(QPixmap("audioPlayer/res/randomIconOFF.svg"), QIcon.Normal)
-            self.randomBtn.setIcon(randomIcon)
-
-            self.actionLoopIt.setText("Loop it: OFF")
-        
-        elif playbackMode == 4:
-            loopIcon = QIcon()
-            loopIcon.addPixmap(QPixmap("audioPlayer/res/loopIconOFF.svg"), QIcon.Normal)
-            self.loopBtn.setIcon(loopIcon)
-
-            self.actionLoopIt.setText("Loop it: OFF")
-
     def autoNextTrack(self):
         
         if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
@@ -428,8 +396,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 else:
                     self.playlist.setCurrentIndex(0)
                     self.mediaPlayer.pause()
-                    # self.mediaPlayer.play()
-                    # self.play_video()
 
             # loop playlist
             elif self.playlist.playbackMode() == 3:
@@ -493,6 +459,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         yaml_dump(self.data)
 
+    def player_state(self, event):
+        if event == QMediaPlayer.PlayingState:
+            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+        elif event == QMediaPlayer.PausedState:
+            self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
