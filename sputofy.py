@@ -65,6 +65,10 @@ class Ui_MainWindow(object):
         self.volumeSlider.setObjectName("volumeSlider")
         self.horizontalLayout_3.addWidget(self.volumeSlider)
 
+        self.volumeLabel = QtWidgets.QLabel(self.centralwidget)
+        self.volumeLabel.setObjectName("volumeLabel")
+        self.horizontalLayout_3.addWidget(self.volumeLabel)
+
 
         self.gridLayout_2.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
 
@@ -196,7 +200,7 @@ class Ui_MainWindow(object):
 
         self.time_remainingLabel.setText(_translate("MainWindow", "00:00"))
         self.total_timeLabel.setText(_translate("MainWindow", "00:00"))
-
+        self.volumeLabel.setText(_translate("MainWindow", "100%"))
 
         self.menuFile.setTitle(_translate("MainWindow", "File"))
 

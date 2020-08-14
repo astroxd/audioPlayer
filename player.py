@@ -106,7 +106,7 @@ class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
                 os.makedirs(download_folder)
             except:
                 download_folder = yaml_loader()['default_folder']
-                print(f"folder already existing : {download_folder}")#TODO da testare
+                print(f"\x1b[1;34;40mfolder already existing : {download_folder}\x1b[0;37;40m")
         
         # array with conversion options
         ydl_opts = {
@@ -123,9 +123,13 @@ class SecondWindow(QtWidgets.QWidget, Ui_Dialog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             try:
                 ydl.download([YTlink])
+                
             except:
                 print("insert a valid url")
 
+            Window().statusbar.showMessage("ciao")#TODO 
+            self.youtube_link.setText("")#TODO 
+            self.close()
             # gettin id and title of song(don't need)
             # info_dict = ydl.extract_info(YTlink)
             # video_id = info_dict.get("id", None)
@@ -155,7 +159,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #load secondWindow
         self.secondWindow = SecondWindow()
 
-        
+        self.statusbar.showMessage("ciao")#TODO
+    
         
         
         # open secondWindow using button
@@ -199,7 +204,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # volumeSlider
         self.volumeSlider.setProperty("value", 100)
+        self.volumeSlider.setRange(0, 100)
+        self.volumeSlider.setValue(self.data['volume'])#TODO maybe in config?
+        self.volumeLabel.setText(f"{self.data['volume']}%")
         self.volumeSlider.valueChanged.connect(self.setVolume)# set mediaPlayer volume using the value took from the slider
+        
         QShortcut('Up', self, lambda:self.volumeSlider.setValue(self.volumeSlider.value()+1))
         QShortcut('Down', self, lambda:self.volumeSlider.setValue(self.volumeSlider.value()-1))
 
@@ -263,9 +272,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.randomBtn.clicked.connect(self.random)# (4) play random song without end
         QShortcut('R', self, lambda:self.random())
         
-        
-    
-
     
     def open_folder(self):
         foldername = QFileDialog.getExistingDirectory(self, "Open folder", "c:\\")
@@ -346,6 +352,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # We receive a QItemSelection from selectionChanged.
         i = ix.indexes()[0].row()
         self.playlist.setCurrentIndex(i)
+        self.mediaPlayer.play()
     
 #================== Playback Settings ==================#    
     
@@ -431,6 +438,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def setVolume(self):
         self.mediaPlayer.setVolume(self.volumeSlider.value())
+        self.volumeLabel.setText(f"{self.mediaPlayer.volume()}%")
         
         if self.volumeSlider.value() == 0:
 
@@ -457,6 +465,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data['last_window_size']['width'] = width
         self.data['last_window_size']['heigth'] = height
         
+        # retrieve volume
+        self.data['volume'] = self.mediaPlayer.volume()
+
         yaml_dump(self.data)
 
     def player_state(self, event):
@@ -477,3 +488,4 @@ if __name__ == "__main__":
 
 #TODO palette
 #TODO save custom playlist
+#TODO fix volume: 0 config
