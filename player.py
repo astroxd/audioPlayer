@@ -6,6 +6,9 @@ import os
 import random
 import sys
 
+from functools import partial
+
+
 import yaml
 import youtube_dl
 from mutagen.mp3 import MP3
@@ -205,9 +208,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # volumeSlider
         self.volumeSlider.setProperty("value", 100)
         self.volumeSlider.setRange(0, 100)
-        self.volumeSlider.setValue(self.data['volume'] if self.data['volume']!=0 else self.data['volume']+1)#TODO maybe in config?
+        self.volumeSlider.setValue(self.data['volume'] if self.data['volume']!=0 else self.data['volume']+1)
         self.volumeLabel.setText(f"{self.data['volume']}%" if self.data['volume']!=0 else f"{self.data['volume']+1}%")
-        #self.volumeSlider.valueChanged.connect(self.setVolume)# set mediaPlayer volume using the value took from the slider
+        self.volumeSlider.valueChanged.connect(self.mediaPlayer.setVolume)# set mediaPlayer volume using the value took from the slider
         
         QShortcut('Up', self, lambda:self.volumeSlider.setValue(self.volumeSlider.value()+1))
         QShortcut('Down', self, lambda:self.volumeSlider.setValue(self.volumeSlider.value()-1))
@@ -219,10 +222,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
 
         # volumeBtn
-        #self.volumeBtn.clicked.connect(self.volumeToggle)# change btn icon using mediaPlayer volume and volume slider movements
-        # self.i_volume = 0
+        
+        self.volumeBtn.clicked.connect(self.volumeToggle)
         self.isMuted = False
         self.previousVolume = self.data['volume']
+
+        QShortcut('M', self, lambda:self.volumeToggle())
 
 
 
@@ -230,6 +235,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mediaPlayer.durationChanged.connect(self.duration_changed)  # set range of duration slider
         self.mediaPlayer.positionChanged.connect(self.position_changed)  # duration slider progress
         self.mediaPlayer.stateChanged.connect(self.player_state)# see when it's playing or in pause 
+        self.mediaPlayer.volumeChanged.connect(self.volumeIcon)# change volumebtn icon
         
         #===========================  playlist  ==============================
         
@@ -274,32 +280,81 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.randomBtn.clicked.connect(self.random)# (4) play random song without end
         QShortcut('R', self, lambda:self.random())
         
-        self.mediaPlayer.volumeChanged.connect(self.test)
-        self.volumeSlider.valueChanged.connect(self.mediaPlayer.setVolume)
-        self.volumeBtn.clicked.connect(self.bottone)
         
-    def test(self, volume):
-        self.volumeLabel.setText(f"{volume}%")
-        if volume != 0:
-            self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
-            self.previousVolume = self.volumeSlider.value()
-            self.isMuted = False
-        else:
-            self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolumeMuted))
-            self.isMuted = True
-    
-    def bottone(self):
-        if self.isMuted == False:
-            self.volumeSlider.setValue(0)
-            self.isMuted = True
-        elif self.isMuted == True:
-            
-            if self.previousVolume == 0:
-                self.volumeSlider.setValue(10)
-            else: 
-                self.volumeSlider.setValue(self.previousVolume)
-            self.isMuted = False
+        
 
+        #se lo rinomini va bene, se lo sposti no
+        # file = r"E:\testFolder\PJaudioPlayer\canzoni_test2\ciao.mp3"
+        
+        # Running the command for obtaining the fileid, 
+        # and saving the output of the command 
+        # output = os.popen(fr"fsutil file queryfileid {file}").read() 
+        
+        # printing the output of the previous command 
+        # print(output) 
+        
+        self.mediaList = []
+        self.currentPlaylist = ""
+
+        
+        self.actionPlaylist1.triggered.connect(partial(self.load_playlist, 1))
+        self.actionPlaylist2.triggered.connect(partial(self.load_playlist, 2))
+        self.actionPlaylist3.triggered.connect(partial(self.load_playlist, 3))
+
+        self.playlist1Btn.clicked.connect(partial(self.custom_playlist, 1))
+        self.playlist2Btn.clicked.connect(partial(self.custom_playlist, 2))
+        self.playlist3Btn.clicked.connect(partial(self.custom_playlist, 3))
+
+        self.actionDeletePlaylist.triggered.connect(self.delete_playlist)
+
+    def load_playlist(self, i):
+        self.playlist.clear()
+        self.mediaList.clear()
+        #reload config
+        self.data = yaml_loader()
+        
+        for song in self.data['playlist'+str(i)]:
+            self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(song)))
+            self.mediaList.append(song)
+       
+        
+        
+                
+        self.playlist.setCurrentIndex(0)
+
+        self.playBtn.setEnabled(True)
+        self.durationSlider.setEnabled(True)
+        self.playlistIsEmpty = False
+
+        self.model.layoutChanged.emit()
+        self.setTitle()
+
+        # adjust play/pause icon
+        self.mediaPlayer.pause()
+
+        self.currentPlaylist = f'playlist{i}'
+        
+
+
+    def custom_playlist(self, i):
+        if not self.playlist.mediaCount() == 0:
+            self.data['playlist'+str(i)] = self.mediaList
+            yaml_dump(self.data)
+
+        else:
+            self.statusbar.showMessage("can't save an empty playlist")
+
+            
+    def delete_playlist(self):
+        if not self.currentPlaylist == "":
+            self.data[self.currentPlaylist] = []
+            yaml_dump(self.data)
+        
+    #use a window to select playlist name
+       
+        
+        
+   
 
 
     def open_folder(self):
@@ -307,8 +362,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if foldername != '':
             self.playlist.clear()
+            self.mediaList = []
             for song in os.listdir(foldername):
-                self.playlist.addMedia(QMediaContent(QUrl(f"{foldername}/{song}")))
+                media = f"{foldername}/{song}"
+                self.playlist.addMedia(QMediaContent(QUrl(media)))
+                self.mediaList.append(media)
+                
             
             self.playlist.setCurrentIndex(0)
 
@@ -321,7 +380,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # adjust play/pause icon
             self.mediaPlayer.pause()
-           
 
     def open_file(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open Song", "c:\\")
@@ -329,8 +387,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if filename != '':
             if self.playlistIsEmpty == False:
                 self.playlist.clear()
+                self.mediaList = []
                 self.playlistIsEmpty = True
             self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(filename)))
+            self.mediaList.append(filename)
 
             self.playBtn.setEnabled(True)
             self.durationSlider.setEnabled(True)
@@ -343,7 +403,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.playlist.setCurrentIndex(0)
                 self.mediaPlayer.pause()
             
-            
+    
            
 
     def setTitle(self):
@@ -444,40 +504,35 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.playlist.setCurrentIndex(random.randint(0, self.playlist.mediaCount()-1))
 
 #=======================================================#               
-    # def volumeToggle(self):
-    #     if self.i_volume == 0:
-
-    #         self.mediaPlayer.setVolume(0)
-    #         self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolumeMuted))
-
-    #         self.i_volume = 1
-
-    #     elif self.i_volume == 1:
-
-    #         if self.volumeSlider.value() == 0:
-
-    #             self.volumeSlider.setValue(10)
-    #             self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+    def volumeIcon(self, volume):
+        self.volumeLabel.setText(f"{volume}%")
+        if volume != 0:
+            self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+            self.previousVolume = self.volumeSlider.value()
+            self.isMuted = False
+        else:
+            self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolumeMuted))
+            self.isMuted = True
+    
+    def volumeToggle(self):
+        if self.isMuted == False:
+            self.volumeSlider.setValue(0)
+            self.isMuted = True
+        elif self.isMuted == True:
             
-    #         else:
-
-    #             self.mediaPlayer.setVolume(self.volumeSlider.value())
-    #             self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
-    #         self.i_volume = 0
-
-    # def setVolume(self):
-    #     self.mediaPlayer.setVolume(self.volumeSlider.value())
-    #     self.volumeLabel.setText(f"{self.mediaPlayer.volume()}%")
-        
-    #     if self.volumeSlider.value() == 0:
-
-    #         self.i_volume = 0
-    #         self.volumeToggle()
-
-    #     else:
-
-    #         self.i_volume = 0
-    #         self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
+            if self.previousVolume == 0:
+                self.volumeSlider.setValue(10)
+            else: 
+                self.volumeSlider.setValue(self.previousVolume)
+            self.isMuted = False
+    
+    def playlist_list(self):
+        index = self.playlist.mediaCount()
+        list = []
+        for i in range(index):
+            print(self.playlist.media(i).canonicalUrl().fileName())
+            list.append(self.playlist.media(i).canonicalUrl().fileName())
+        return list
     
     def closeEvent(self, event): #event handler that take window information and save it in config before the window close
         # retrieve position

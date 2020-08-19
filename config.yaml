@@ -1,8 +1,23 @@
 default_folder: C:\Users\andre\Desktop\sputofy_songs
 last_position:
-  xPos: 781
-  yPos: 375
+  xPos: 396
+  yPos: 434
 last_window_size:
-  heigth: 456
-  width: 836
-volume: 66
+  heigth: 555
+  width: 911
+playlist1:
+- E:/testFolder/PJaudioPlayer/canzoni_test2/ciao.mp3
+- E:/testFolder/PJaudioPlayer/canzoni_test2/legends.mp3
+- E:/testFolder/PJaudioPlayer/canzoni_test2/Nightcore - What I've Done-ZbHz930cGRo.mp3
+playlist2: []
+playlist3:
+- E:/testFolder/PJaudioPlayer/canzoni_test/1 Hour - Most Epic Anime Mix - BEST OF
+  DECISIVE MOMENTS - Epic Anime OST .mp3
+- E:/testFolder/PJaudioPlayer/canzoni_test/Legends Never Die ft Against The Current
+  OFFICIAL AUDIO  Worlds 2017 - League of Legends.mp3
+- E:/testFolder/PJaudioPlayer/canzoni_test/M.mp3
+- E:/testFolder/PJaudioPlayer/canzoni_test/Nightcore - RISE - (League of Legends _
+  Lyrics).mp3
+- E:/testFolder/PJaudioPlayer/canzoni_test/Nightcore - Try-x9WpVoAC3tk.mp3
+- E:/testFolder/PJaudioPlayer/canzoni_test/Nightcore - What I've Done-ZbHz930cGRo.mp3
+volume: 100

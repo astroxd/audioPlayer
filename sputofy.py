@@ -27,6 +27,28 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_2.setObjectName("gridLayout_2")
 
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setContentsMargins(-1, 6, -1, -1)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        
+        self.playlist1Btn = QtWidgets.QPushButton(self.centralwidget)
+        self.playlist1Btn.setObjectName("playlist1Btn")
+        self.horizontalLayout_4.addWidget(self.playlist1Btn)
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem4)
+
+        self.playlist2Btn = QtWidgets.QPushButton(self.centralwidget)
+        self.playlist2Btn.setObjectName("playlist2Btn")
+        self.horizontalLayout_4.addWidget(self.playlist2Btn)
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem5)
+
+        self.playlist3Btn = QtWidgets.QPushButton(self.centralwidget)
+        self.playlist3Btn.setObjectName("playlist3Btn")
+        self.horizontalLayout_4.addWidget(self.playlist3Btn)
+        
+        self.gridLayout_2.addLayout(self.horizontalLayout_4, 0, 0, 1, 1)
+        
 
         self.playlistView = QtWidgets.QListView(self.centralwidget)
         self.playlistView.setAcceptDrops(True)
@@ -35,7 +57,7 @@ class Ui_MainWindow(object):
         self.playlistView.setAlternatingRowColors(True)
         self.playlistView.setUniformItemSizes(True)
         self.playlistView.setObjectName("playlistView")
-        self.gridLayout_2.addWidget(self.playlistView, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.playlistView, 1, 0, 1, 1)
 
 
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
@@ -70,8 +92,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.volumeLabel)
 
 
-        self.gridLayout_2.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
-
+        self.gridLayout_2.addLayout(self.horizontalLayout_3, 4, 0, 1, 1)
 
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(-1, 6, -1, -1)
@@ -95,7 +116,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.total_timeLabel)
 
 
-        self.gridLayout_2.addLayout(self.horizontalLayout_2, 2, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.horizontalLayout_2, 3, 0, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
 
@@ -136,7 +157,7 @@ class Ui_MainWindow(object):
 
         
 
-        self.gridLayout_2.addLayout(self.horizontalLayout, 1, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.horizontalLayout, 2, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         
         
@@ -170,6 +191,18 @@ class Ui_MainWindow(object):
         self.actionLoopIt = QtWidgets.QAction(MainWindow)
         self.actionLoopIt.setObjectName("actionLoopIt")
 
+        self.actionPlaylist1 = QtWidgets.QAction(MainWindow)
+        self.actionPlaylist1.setObjectName("acttionPlaylist1")
+        
+        self.actionPlaylist2 = QtWidgets.QAction(MainWindow)
+        self.actionPlaylist2.setObjectName("acttionPlaylist2")
+        
+        self.actionPlaylist3 = QtWidgets.QAction(MainWindow)
+        self.actionPlaylist3.setObjectName("acttionPlaylist3")
+
+        self.actionDeletePlaylist = QtWidgets.QAction(MainWindow)
+        self.actionDeletePlaylist.setObjectName("actionDeletePlaylist")
+
 
         self.menuFile.addAction(self.actionOpen_File)
         self.menuFile.addAction(self.actionOpen_Folder)
@@ -177,6 +210,10 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.menuSong.addAction(self.actionLoopIt)
+        self.menuSong.addAction(self.actionPlaylist1)
+        self.menuSong.addAction(self.actionPlaylist2)
+        self.menuSong.addAction(self.actionPlaylist3)
+        self.menuSong.addAction(self.actionDeletePlaylist)
         self.menubar.addAction(self.menuSong.menuAction())
         
         
@@ -220,3 +257,13 @@ class Ui_MainWindow(object):
 
         self.actionLoopIt.setText(_translate("MainWindow", "Loop it: OFF"))
         self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+L"))
+
+        self.actionPlaylist1.setText(_translate("MainWindow", "Playlist 1"))
+        self.actionPlaylist2.setText(_translate("MainWindow", "Playlist 2"))
+        self.actionPlaylist3.setText(_translate("MainWindow", "Playlist 3"))
+        self.actionDeletePlaylist.setText(_translate("MainWindow", "Delete Playlist"))
+        
+        self.playlist1Btn.setText(_translate("MainWindow", "P1"))
+        self.playlist2Btn.setText(_translate("MainWindow", "P2"))
+        self.playlist3Btn.setText(_translate("MainWindow", "P3"))
+        
