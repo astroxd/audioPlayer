@@ -273,7 +273,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.isCustomPlaylist = False
 
         # add song name on title
-        self.playlist.mediaChanged.connect(partial(self.setTitle, 0))
+        self.playlist.currentIndexChanged.connect(self.setTitle)
         
         
         # playlist button
@@ -418,7 +418,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.isCustomPlaylist == False:
             self.setWindowTitle(f"Sputofy - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
         else:
-            if i != 0: 
+            if i in range(1,2,3): 
                 self.setWindowTitle(f"Sputofy - {self.data['playlist'+str(i)+'Name']} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
 #=======================================================# 
 
