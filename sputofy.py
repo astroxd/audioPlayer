@@ -9,10 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
+import sys, os
 
 from PyQt5.QtWidgets import QStyle
 from PyQt5.QtGui import QIcon
+
+gui_base_path = os.path.split(os.path.abspath(__file__))[0]
+gui_specific_path = f"{gui_base_path}\\res"
 
 
 class Ui_MainWindow(object):
@@ -76,9 +79,11 @@ class Ui_MainWindow(object):
 
 
         self.volumeBtn = QtWidgets.QPushButton(self.centralwidget)
+        volumeIcon = QtGui.QIcon()
+        volumeIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "volumeIcon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.volumeBtn.setIcon(volumeIcon)
         self.volumeBtn.setObjectName("volumeBtn")
         self.horizontalLayout_3.addWidget(self.volumeBtn)
-        self.volumeBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaVolume))
 
         
         self.volumeSlider = QtWidgets.QSlider(self.centralwidget)
@@ -123,33 +128,42 @@ class Ui_MainWindow(object):
 
         self.loopBtn = QtWidgets.QPushButton(self.centralwidget)
         loopIcon = QtGui.QIcon()
-        loopIcon.addPixmap(QtGui.QPixmap("audioPlayer/res/loopIconOFF.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        loopIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "loopIconOFF.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.loopBtn.setIcon(loopIcon)
         self.loopBtn.setObjectName("loopBtn")
         self.horizontalLayout.addWidget(self.loopBtn)
 
 
         self.prevBtn = QtWidgets.QPushButton(self.centralwidget)
+        prevIcon = QtGui.QIcon()
+        prevIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "backwardIcon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.prevBtn.setIcon(prevIcon)
         self.prevBtn.setObjectName("prevBtn")
         self.horizontalLayout.addWidget(self.prevBtn)
-        self.prevBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
+        # self.prevBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
 
 
         self.playBtn = QtWidgets.QPushButton(self.centralwidget)
+        playIcon = QtGui.QIcon()
+        playIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "playIcon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.playBtn.setIcon(playIcon)
         self.playBtn.setObjectName("playBtn")
         self.horizontalLayout.addWidget(self.playBtn)
-        self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        # self.playBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
 
         self.nextBtn = QtWidgets.QPushButton(self.centralwidget)
+        nextIcon = QtGui.QIcon()
+        nextIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "forwardIcon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.nextBtn.setIcon(nextIcon)
         self.nextBtn.setObjectName("nextBtn")
         self.horizontalLayout.addWidget(self.nextBtn)
-        self.nextBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekForward))
+        # self.nextBtn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekForward))
 
         
         self.randomBtn = QtWidgets.QPushButton(self.centralwidget)
         randomIcon = QtGui.QIcon()
-        randomIcon.addPixmap(QtGui.QPixmap("audioPlayer/res/randomIconOFF.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        randomIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "randomIconOFF.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.randomBtn.setIcon(randomIcon)
         self.randomBtn.setIconSize(QtCore.QSize(18, 18))
         self.randomBtn.setObjectName("randomBtn")
