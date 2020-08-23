@@ -220,6 +220,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.volumeSlider.setProperty("value", 100)
         self.volumeSlider.setRange(0, 100)
         self.volumeSlider.setValue(self.data['volume'] if self.data['volume']!=0 else self.data['volume']+1)
+        self.mediaPlayer.setVolume(self.data['volume'])#TODO 
         self.volumeLabel.setText(f"{self.data['volume']}%" if self.data['volume']!=0 else f"{self.data['volume']+1}%")
         self.volumeSlider.valueChanged.connect(self.mediaPlayer.setVolume)# set mediaPlayer volume using the value took from the slider
         
@@ -356,7 +357,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.isCustomPlaylist = False
             self.model.layoutChanged.emit()
-            self.setTitle(0)
+            self.setTitle()
 
             # adjust play/pause icon
             self.mediaPlayer.pause()
@@ -377,7 +378,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.isCustomPlaylist = False
             self.model.layoutChanged.emit()
-            self.setTitle(0)
+            self.setTitle()
             
             # adjust play/pause icon
             if self.playlist.mediaCount() == 1:
@@ -406,20 +407,21 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.isCustomPlaylist = True    
         self.model.layoutChanged.emit()
-        self.setTitle(i)
+        
 
         # adjust play/pause icon
         self.mediaPlayer.pause()
 
-        self.currentPlaylist = f'playlist{i}'
+        self.currentPlaylist = f'playlist{str(i)}'
+        self.setTitle()
         
     
-    def setTitle(self, i):
+    def setTitle(self):
         if self.isCustomPlaylist == False:
             self.setWindowTitle(f"Sputofy - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
         else:
-            if i in range(1,2,3): 
-                self.setWindowTitle(f"Sputofy - {self.data['playlist'+str(i)+'Name']} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
+            self.setWindowTitle(f"Sputofy - {self.data[self.currentPlaylist+'Name']} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
+            
 #=======================================================# 
 
 

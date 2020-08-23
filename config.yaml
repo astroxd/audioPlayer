@@ -1,7 +1,7 @@
 default_folder: C:\Users\andre\Desktop\sputofy_songs
 last_position:
-  xPos: 22
-  yPos: 190
+  xPos: 109
+  yPos: 150
 last_window_size:
   heigth: 554
   width: 921
@@ -18,6 +18,7 @@ playlist1:
   j\xE0 vu Ending - 'Itsumo Kono Basho de' - Ayane [ENG LYRICS].mp3"
 - C:/Users/andre/Desktop/Steins;Gate/STEINS;GATE 0 - Amadeus.mp3
 - C:/Users/andre/Desktop/Steins;Gate/STEINS;GATE 0 Ending 'LAST GAME' by Zwei.mp3
+- C:/Users/andre/Desktop/Steins;Gate/STEINS;GATE 0 Opening  - 'Fatima' by Kanako Ito.mp3
 - C:/Users/andre/Desktop/Steins;Gate/Steins;Gate Believe Me.mp3
 - C:/Users/andre/Desktop/Steins;Gate/Steins;Gate Ending (Toki Tsukasadoru Juuni no
   Meiyaku).mp3
@@ -35,4 +36,4 @@ playlist2Name: cacca
 playlist3:
 - E:/testFolder/PJaudioPlayer/canzoni_test2/Nightcore - What I've Done-ZbHz930cGRo.mp3
 playlist3Name: tesr2
-volume: 100
+volume: 3
