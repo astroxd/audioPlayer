@@ -274,7 +274,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.isCustomPlaylist = False
 
         # add song name on title
-        # self.playlist.currentIndexChanged.connect(self.setTitle)
+        self.playlist.currentIndexChanged.connect(self.setTitle)
         
         
         # playlist button
@@ -297,24 +297,24 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         QShortcut('R', self, lambda:self.random())
         
         # load playlist
-        self.actionPlaylist1.triggered.connect(partial(self.load_playlist, 1))
-        self.actionPlaylist1.setText(self.data['playlist1Name'])# load with the new playlist name
+        # self.actionPlaylist1.triggered.connect(partial(self.load_playlist, 1))
+        # self.actionPlaylist1.setText(self.data['playlist1Name'])# load with the new playlist name
         
-        self.actionPlaylist2.triggered.connect(partial(self.load_playlist, 2))
-        self.actionPlaylist2.setText(self.data['playlist2Name'])# load with the new playlist name
+        # self.actionPlaylist2.triggered.connect(partial(self.load_playlist, 2))
+        # self.actionPlaylist2.setText(self.data['playlist2Name'])# load with the new playlist name
         
-        self.actionPlaylist3.triggered.connect(partial(self.load_playlist, 3))
-        self.actionPlaylist3.setText(self.data['playlist3Name'])# load with the new playlist name
+        # self.actionPlaylist3.triggered.connect(partial(self.load_playlist, 3))
+        # self.actionPlaylist3.setText(self.data['playlist3Name'])# load with the new playlist name
 
-        # save playlist
-        self.playlist1Btn.clicked.connect(partial(self.custom_playlist, 1))
-        self.playlist2Btn.clicked.connect(partial(self.custom_playlist, 2))
-        self.playlist3Btn.clicked.connect(partial(self.custom_playlist, 3))
+        # # save playlist
+        # self.playlist1Btn.clicked.connect(partial(self.custom_playlist, 1))
+        # self.playlist2Btn.clicked.connect(partial(self.custom_playlist, 2))
+        # self.playlist3Btn.clicked.connect(partial(self.custom_playlist, 3))
 
-        # when you save a playlist chose its name
-        self.playlist1Btn.clicked.connect(partial(self.setPlaylistName, 1))
-        self.playlist2Btn.clicked.connect(partial(self.setPlaylistName, 2))
-        self.playlist3Btn.clicked.connect(partial(self.setPlaylistName, 3))
+        # # when you save a playlist chose its name
+        # self.playlist1Btn.clicked.connect(partial(self.setPlaylistName, 1))
+        # self.playlist2Btn.clicked.connect(partial(self.setPlaylistName, 2))
+        # self.playlist3Btn.clicked.connect(partial(self.setPlaylistName, 3))
 
         # delete current playlist
         self.actionDeletePlaylist.triggered.connect(self.delete_playlist)
@@ -327,32 +327,96 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # for item in self.items:
         #     self.menuPlaylist.addAction(item, partial(self.load_playlist, 1))
     
-        self.playlist_list = self.data['playlist_list']
-        self.indice = 0
-        for item in self.playlist_list:
-            self.menuPlaylist.addAction(item, partial(self.load_playlist, self.indice))
-            self.indice+= 1
+        self.dizionario = self.data['dizionario']
+        for item in self.dizionario:
+            self.menuPlaylist.addAction(item, partial(self.load_playlistNew, item))
+
+        # self.playlist_list = self.data['playlist_list']
+        # print(self.playlist_list[0])
+        # self.indice = 0
+        # for item in self.playlist_list:
+        #     self.menuPlaylist.addAction(item, partial(self.load_playlistNew, self.playlist_list[self.indice]))
+        #     self.indice+= 1
+        
     def addPlaylist(self):
-        nplaylist = len(self.playlist_list)
+        # nplaylist = len(self.playlist_list)
 
+        # if not self.playlist.mediaCount() == 0:
+            
+        #     self.playlist_list.append(f"playlist{nplaylist}")    
+        #     self.menuPlaylist.addAction(self.playlist_list[nplaylist], partial(self.load_playlistNew, self.playlist_list[nplaylist]))
+
+            
+        #     self.data[self.playlist_list[nplaylist]] = self.mediaList
+        #     self.data['playlist_list'] = self.playlist_list
+        #     yaml_dump(self.data)
+
+        # else:
+        #     self.statusbar.showMessage("can't save an empty playlist")
         if not self.playlist.mediaCount() == 0:
+            nome, is_notEmpty = QInputDialog.getText(self, "playlist", "save playlist as:")
             
-            self.playlist_list.append(f"playlist{nplaylist}")    
-            self.menuPlaylist.addAction(self.playlist_list[nplaylist], partial(self.load_playlist, nplaylist))
+            if nome != "":
+                self.dizionario[nome] = self.mediaList
+                self.data['dizionario'][nome] = self.mediaList
+                yaml_dump(self.data)
+                self.menuPlaylist.addAction(nome, partial(self.load_playlistNew, nome))
+            else:
+                print("ciao")
 
-            
-            self.data[self.playlist_list[nplaylist]] = self.mediaList
-            self.data['playlist_list'] = self.playlist_list
-            yaml_dump(self.data)
-
-        else:
-            self.statusbar.showMessage("can't save an empty playlist")
-
+    def load_playlistNew(self, i):
+        # self.playlist.clear()
+        # self.mediaList.clear()
+        # #reload config
+        # self.data = yaml_loader()
+        # for song in self.data[i]:
+        #     self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(song)))
+        #     self.mediaList.append(song)
+       
         
         
+                
+        # self.playlist.setCurrentIndex(0)
+
+        # self.playBtn.setEnabled(True)
+        # self.durationSlider.setEnabled(True)
+        # self.playlistIsEmpty = False
+
+        # self.isCustomPlaylist = True    
+        # self.model.layoutChanged.emit()
+        
+
+        # # adjust play/pause icon
+        # self.mediaPlayer.pause()
+
+        # self.currentPlaylist = i
+        # # self.setTitle()
+
+        self.playlist.clear()
+        self.mediaList.clear()
+        #reload config
+        self.data = yaml_loader()
+        
+        for song in self.data['dizionario'][i]:
+            self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(song)))
+            self.mediaList.append(song)
 
 
+        self.playlist.setCurrentIndex(0)
 
+        self.playBtn.setEnabled(True)
+        self.durationSlider.setEnabled(True)
+        self.playlistIsEmpty = False
+
+        self.isCustomPlaylist = True    
+        self.model.layoutChanged.emit()
+        
+
+        # adjust play/pause icon
+        self.mediaPlayer.pause()
+
+        self.currentPlaylist = i
+        self.setTitle()
             
     
        
@@ -382,10 +446,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.isCustomPlaylist = False
             self.model.layoutChanged.emit()
-            # self.setTitle()
+            self.setTitle()
 
             # adjust play/pause icon
             self.mediaPlayer.pause()
+            self.playlist_array()
 
     def open_file(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open Song", "c:\\")
@@ -403,7 +468,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.isCustomPlaylist = False
             self.model.layoutChanged.emit()
-            # self.setTitle()
+            self.setTitle()
+            print(filename)
             
             # adjust play/pause icon
             if self.playlist.mediaCount() == 1:
@@ -445,7 +511,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.isCustomPlaylist == False:
             self.setWindowTitle(f"Sputofy - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
         else:
-            self.setWindowTitle(f"Sputofy - {self.data[self.currentPlaylist+'Name']} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
+            # self.setWindowTitle(f"Sputofy - {self.data[self.currentPlaylist+'Name']} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
+            self.setWindowTitle(f"Sputofy - {self.currentPlaylist} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
             
 #=======================================================# 
 
@@ -480,11 +547,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 #================== Playlist Settings ==================#
     #TODO useless
-    def playlist_list(self):
+    def playlist_array(self):
         index = self.playlist.mediaCount()
         list = []
         for i in range(index):
-            print(self.playlist.media(i).canonicalUrl().fileName())
+            print(self.playlist.media(i).canonicalUrl().path())
             list.append(self.playlist.media(i).canonicalUrl().fileName())
         return list
 
