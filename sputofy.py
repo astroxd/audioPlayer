@@ -186,6 +186,9 @@ class Ui_MainWindow(object):
         self.menuSong = QtWidgets.QMenu(self.menubar)
         self.menuSong.setObjectName("menuSong")
 
+        self.menuPlaylist = QtWidgets.QMenu(self.menubar)
+        self.menuPlaylist.setObjectName("menuPlaylist")
+
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -217,6 +220,12 @@ class Ui_MainWindow(object):
         self.actionDeletePlaylist = QtWidgets.QAction(MainWindow)
         self.actionDeletePlaylist.setObjectName("actionDeletePlaylist")
 
+        self.actionTest = QtWidgets.QAction(MainWindow)
+        self.actionTest.setObjectName("actionTest")
+
+        self.actionAdd = QtWidgets.QAction(MainWindow)
+        self.actionAdd.setObjectName("actionAdd")
+
 
         self.menuFile.addAction(self.actionOpen_File)
         self.menuFile.addAction(self.actionOpen_Folder)
@@ -228,8 +237,11 @@ class Ui_MainWindow(object):
         self.menuSong.addAction(self.actionPlaylist2)
         self.menuSong.addAction(self.actionPlaylist3)
         self.menuSong.addAction(self.actionDeletePlaylist)
+        self.menuSong.addAction(self.actionAdd)
         self.menubar.addAction(self.menuSong.menuAction())
         
+        self.menuPlaylist.addAction(self.actionTest)
+        self.menubar.addAction(self.menuPlaylist.menuAction())
         
         
 
@@ -267,7 +279,7 @@ class Ui_MainWindow(object):
         self.actionOpenSecondWindow.setShortcut(_translate("MainWindow", "Ctrl+T"))
 
 
-        self.menuSong.setTitle(_translate("MainWindo", "Song"))
+        self.menuSong.setTitle(_translate("MainWindow", "Song"))
 
         self.actionLoopIt.setText(_translate("MainWindow", "Loop it: OFF"))
         self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+L"))
@@ -280,4 +292,7 @@ class Ui_MainWindow(object):
         self.playlist1Btn.setText(_translate("MainWindow", "P1"))
         self.playlist2Btn.setText(_translate("MainWindow", "P2"))
         self.playlist3Btn.setText(_translate("MainWindow", "P3"))
-        
+
+        self.menuPlaylist.setTitle(_translate("MainWindow", "Playlist"))
+        self.actionTest.setText(_translate("MainWindow", "test"))
+        self.actionAdd.setText(_translate("MainWindow", "add"))

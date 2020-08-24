@@ -19,7 +19,7 @@ from PyQt5.QtMultimedia import (QMediaContent, QMediaPlayer,
                                 QMediaPlayerControl, QMediaPlaylist)
 from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtWidgets import (QFileDialog, QHBoxLayout, QLineEdit, QMainWindow,
-                             QPushButton, QStyle, QVBoxLayout, QShortcut, QInputDialog)
+                             QPushButton, QStyle, QVBoxLayout, QShortcut, QInputDialog, QAction)
 
 
 from playlistNameWindow import Ui_playlistNameWindow
@@ -274,7 +274,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.isCustomPlaylist = False
 
         # add song name on title
-        self.playlist.currentIndexChanged.connect(self.setTitle)
+        # self.playlist.currentIndexChanged.connect(self.setTitle)
         
         
         # playlist button
@@ -320,13 +320,38 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionDeletePlaylist.triggered.connect(self.delete_playlist)
 
 
-    
 
+        self.actionAdd.triggered.connect(self.addPlaylist)
     
+        # self.items = ['item 1', 'item 2']
+        # for item in self.items:
+        #     self.menuPlaylist.addAction(item, partial(self.load_playlist, 1))
+    
+        self.playlist_list = self.data['playlist_list']
+        self.indice = 0
+        for item in self.playlist_list:
+            self.menuPlaylist.addAction(item, partial(self.load_playlist, self.indice))
+            self.indice+= 1
+    def addPlaylist(self):
+        nplaylist = len(self.playlist_list)
+
+        if not self.playlist.mediaCount() == 0:
+            
+            self.playlist_list.append(f"playlist{nplaylist}")    
+            self.menuPlaylist.addAction(self.playlist_list[nplaylist], partial(self.load_playlist, nplaylist))
+
+            
+            self.data[self.playlist_list[nplaylist]] = self.mediaList
+            self.data['playlist_list'] = self.playlist_list
+            yaml_dump(self.data)
+
+        else:
+            self.statusbar.showMessage("can't save an empty playlist")
+
+        
         
 
 
-    
 
             
     
@@ -357,7 +382,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.isCustomPlaylist = False
             self.model.layoutChanged.emit()
-            self.setTitle()
+            # self.setTitle()
 
             # adjust play/pause icon
             self.mediaPlayer.pause()
@@ -378,7 +403,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.isCustomPlaylist = False
             self.model.layoutChanged.emit()
-            self.setTitle()
+            # self.setTitle()
             
             # adjust play/pause icon
             if self.playlist.mediaCount() == 1:
@@ -413,7 +438,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mediaPlayer.pause()
 
         self.currentPlaylist = f'playlist{str(i)}'
-        self.setTitle()
+        # self.setTitle()
         
     
     def setTitle(self):
