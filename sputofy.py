@@ -208,23 +208,23 @@ class Ui_MainWindow(object):
         self.actionLoopIt = QtWidgets.QAction(MainWindow)
         self.actionLoopIt.setObjectName("actionLoopIt")
 
-        self.actionPlaylist1 = QtWidgets.QAction(MainWindow)
-        self.actionPlaylist1.setObjectName("acttionPlaylist1")
+        # self.actionPlaylist1 = QtWidgets.QAction(MainWindow)
+        # self.actionPlaylist1.setObjectName("acttionPlaylist1")
         
-        self.actionPlaylist2 = QtWidgets.QAction(MainWindow)
-        self.actionPlaylist2.setObjectName("acttionPlaylist2")
+        # self.actionPlaylist2 = QtWidgets.QAction(MainWindow)
+        # self.actionPlaylist2.setObjectName("acttionPlaylist2")
         
-        self.actionPlaylist3 = QtWidgets.QAction(MainWindow)
-        self.actionPlaylist3.setObjectName("acttionPlaylist3")
+        # self.actionPlaylist3 = QtWidgets.QAction(MainWindow)
+        # self.actionPlaylist3.setObjectName("acttionPlaylist3")
 
         self.actionDeletePlaylist = QtWidgets.QAction(MainWindow)
         self.actionDeletePlaylist.setObjectName("actionDeletePlaylist")
 
-        self.actionTest = QtWidgets.QAction(MainWindow)
-        self.actionTest.setObjectName("actionTest")
+        # self.actionTest = QtWidgets.QAction(MainWindow)
+        # self.actionTest.setObjectName("actionTest")
 
-        self.actionAdd = QtWidgets.QAction(MainWindow)
-        self.actionAdd.setObjectName("actionAdd")
+        self.actionCreatePlaylist = QtWidgets.QAction(MainWindow)
+        self.actionCreatePlaylist.setObjectName("actionCreatePlaylist")
 
 
         self.menuFile.addAction(self.actionOpen_File)
@@ -233,14 +233,14 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.menuSong.addAction(self.actionLoopIt)
-        self.menuSong.addAction(self.actionPlaylist1)
-        self.menuSong.addAction(self.actionPlaylist2)
-        self.menuSong.addAction(self.actionPlaylist3)
+        # self.menuSong.addAction(self.actionPlaylist1)
+        # self.menuSong.addAction(self.actionPlaylist2)
+        # self.menuSong.addAction(self.actionPlaylist3)
         self.menuSong.addAction(self.actionDeletePlaylist)
-        self.menuSong.addAction(self.actionAdd)
+        self.menuSong.addAction(self.actionCreatePlaylist)
         self.menubar.addAction(self.menuSong.menuAction())
         
-        self.menuPlaylist.addAction(self.actionTest)
+        # self.menuPlaylist.addAction(self.actionTest)
         self.menubar.addAction(self.menuPlaylist.menuAction())
         
         
@@ -284,9 +284,9 @@ class Ui_MainWindow(object):
         self.actionLoopIt.setText(_translate("MainWindow", "Loop it: OFF"))
         self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+L"))
 
-        self.actionPlaylist1.setText(_translate("MainWindow", "Playlist 1"))
-        self.actionPlaylist2.setText(_translate("MainWindow", "Playlist 2"))
-        self.actionPlaylist3.setText(_translate("MainWindow", "Playlist 3"))
+        # self.actionPlaylist1.setText(_translate("MainWindow", "Playlist 1"))
+        # self.actionPlaylist2.setText(_translate("MainWindow", "Playlist 2"))
+        # self.actionPlaylist3.setText(_translate("MainWindow", "Playlist 3"))
         self.actionDeletePlaylist.setText(_translate("MainWindow", "Delete Playlist"))
         
         self.playlist1Btn.setText(_translate("MainWindow", "P1"))
@@ -294,5 +294,4 @@ class Ui_MainWindow(object):
         self.playlist3Btn.setText(_translate("MainWindow", "P3"))
 
         self.menuPlaylist.setTitle(_translate("MainWindow", "Playlist"))
-        self.actionTest.setText(_translate("MainWindow", "test"))
-        self.actionAdd.setText(_translate("MainWindow", "add"))
+        self.actionCreatePlaylist.setText(_translate("MainWindow", "Playlist This"))

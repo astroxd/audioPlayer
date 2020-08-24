@@ -296,130 +296,26 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.randomBtn.clicked.connect(self.random)# (4) play random song without end
         QShortcut('R', self, lambda:self.random())
         
-        # load playlist
-        # self.actionPlaylist1.triggered.connect(partial(self.load_playlist, 1))
-        # self.actionPlaylist1.setText(self.data['playlist1Name'])# load with the new playlist name
-        
-        # self.actionPlaylist2.triggered.connect(partial(self.load_playlist, 2))
-        # self.actionPlaylist2.setText(self.data['playlist2Name'])# load with the new playlist name
-        
-        # self.actionPlaylist3.triggered.connect(partial(self.load_playlist, 3))
-        # self.actionPlaylist3.setText(self.data['playlist3Name'])# load with the new playlist name
-
-        # # save playlist
-        # self.playlist1Btn.clicked.connect(partial(self.custom_playlist, 1))
-        # self.playlist2Btn.clicked.connect(partial(self.custom_playlist, 2))
-        # self.playlist3Btn.clicked.connect(partial(self.custom_playlist, 3))
-
-        # # when you save a playlist chose its name
-        # self.playlist1Btn.clicked.connect(partial(self.setPlaylistName, 1))
-        # self.playlist2Btn.clicked.connect(partial(self.setPlaylistName, 2))
-        # self.playlist3Btn.clicked.connect(partial(self.setPlaylistName, 3))
-
         # delete current playlist
         self.actionDeletePlaylist.triggered.connect(self.delete_playlist)
 
 
 
-        self.actionAdd.triggered.connect(self.addPlaylist)
+        self.actionCreatePlaylist.triggered.connect(self.custom_playlist)
+
     
-        # self.items = ['item 1', 'item 2']
-        # for item in self.items:
-        #     self.menuPlaylist.addAction(item, partial(self.load_playlist, 1))
+
+        self.playlistList = self.data['playlistList']
+        self.actionDict = {}
+        for item in self.playlistList:
+            self.actionDict[item] = self.menuPlaylist.addAction(item, partial(self.load_playlist, item))
+
     
-        self.dizionario = self.data['dizionario']
-        for item in self.dizionario:
-            self.menuPlaylist.addAction(item, partial(self.load_playlistNew, item))
 
-        # self.playlist_list = self.data['playlist_list']
-        # print(self.playlist_list[0])
-        # self.indice = 0
-        # for item in self.playlist_list:
-        #     self.menuPlaylist.addAction(item, partial(self.load_playlistNew, self.playlist_list[self.indice]))
-        #     self.indice+= 1
-        
-    def addPlaylist(self):
-        # nplaylist = len(self.playlist_list)
-
-        # if not self.playlist.mediaCount() == 0:
-            
-        #     self.playlist_list.append(f"playlist{nplaylist}")    
-        #     self.menuPlaylist.addAction(self.playlist_list[nplaylist], partial(self.load_playlistNew, self.playlist_list[nplaylist]))
-
-            
-        #     self.data[self.playlist_list[nplaylist]] = self.mediaList
-        #     self.data['playlist_list'] = self.playlist_list
-        #     yaml_dump(self.data)
-
-        # else:
-        #     self.statusbar.showMessage("can't save an empty playlist")
-        if not self.playlist.mediaCount() == 0:
-            nome, is_notEmpty = QInputDialog.getText(self, "playlist", "save playlist as:")
-            
-            if nome != "":
-                self.dizionario[nome] = self.mediaList
-                self.data['dizionario'][nome] = self.mediaList
-                yaml_dump(self.data)
-                self.menuPlaylist.addAction(nome, partial(self.load_playlistNew, nome))
-            else:
-                print("ciao")
-
-    def load_playlistNew(self, i):
-        # self.playlist.clear()
-        # self.mediaList.clear()
-        # #reload config
-        # self.data = yaml_loader()
-        # for song in self.data[i]:
-        #     self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(song)))
-        #     self.mediaList.append(song)
-       
-        
-        
-                
-        # self.playlist.setCurrentIndex(0)
-
-        # self.playBtn.setEnabled(True)
-        # self.durationSlider.setEnabled(True)
-        # self.playlistIsEmpty = False
-
-        # self.isCustomPlaylist = True    
-        # self.model.layoutChanged.emit()
-        
-
-        # # adjust play/pause icon
-        # self.mediaPlayer.pause()
-
-        # self.currentPlaylist = i
-        # # self.setTitle()
-
-        self.playlist.clear()
-        self.mediaList.clear()
-        #reload config
-        self.data = yaml_loader()
-        
-        for song in self.data['dizionario'][i]:
-            self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(song)))
-            self.mediaList.append(song)
-
-
-        self.playlist.setCurrentIndex(0)
-
-        self.playBtn.setEnabled(True)
-        self.durationSlider.setEnabled(True)
-        self.playlistIsEmpty = False
-
-        self.isCustomPlaylist = True    
-        self.model.layoutChanged.emit()
-        
-
-        # adjust play/pause icon
-        self.mediaPlayer.pause()
-
-        self.currentPlaylist = i
-        self.setTitle()
-            
     
-       
+    
+    
+
         
         
    
@@ -469,7 +365,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.isCustomPlaylist = False
             self.model.layoutChanged.emit()
             self.setTitle()
-            print(filename)
             
             # adjust play/pause icon
             if self.playlist.mediaCount() == 1:
@@ -483,13 +378,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #reload config
         self.data = yaml_loader()
         
-        for song in self.data['playlist'+str(i)]:
+        for song in self.data['playlistList'][i]:
             self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(song)))
             self.mediaList.append(song)
-       
-        
-        
-                
+
+
         self.playlist.setCurrentIndex(0)
 
         self.playBtn.setEnabled(True)
@@ -503,15 +396,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # adjust play/pause icon
         self.mediaPlayer.pause()
 
-        self.currentPlaylist = f'playlist{str(i)}'
-        # self.setTitle()
+        self.currentPlaylist = i
+        self.setTitle()
+            
         
     
     def setTitle(self):
         if self.isCustomPlaylist == False:
             self.setWindowTitle(f"Sputofy - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
         else:
-            # self.setWindowTitle(f"Sputofy - {self.data[self.currentPlaylist+'Name']} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
             self.setWindowTitle(f"Sputofy - {self.currentPlaylist} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
             
 #=======================================================# 
@@ -555,44 +448,59 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             list.append(self.playlist.media(i).canonicalUrl().fileName())
         return list
 
-    def custom_playlist(self, i):
+    def custom_playlist(self):
         if not self.playlist.mediaCount() == 0:
-            self.data['playlist'+str(i)] = self.mediaList
-            yaml_dump(self.data)
-
-        else:
-            self.statusbar.showMessage("can't save an empty playlist")
-
-    def setPlaylistName(self, i):
-        if self.playlist.mediaCount() != 0:
-            playlistName, is_notEmpty = QInputDialog.getText(self, "playlist", f"save {self.data['playlist'+str(i)+'Name']} as:")
+            nome, is_notEmpty = QInputDialog.getText(self, "playlist", "save playlist as:")
             
-            if playlistName != "":
-                if i == 1:
-                    self.actionPlaylist1.setText(playlistName)
-                    self.data['playlist1Name'] = playlistName
-                elif i == 2:
-                    self.actionPlaylist2.setText(playlistName)
-                    self.data['playlist2Name'] = playlistName
-                elif i == 3:
-                    self.actionPlaylist3.setText(playlistName)
-                    self.data['playlist3Name'] = playlistName
+            if nome != "":
+                self.playlistList[nome] = self.mediaList
+                self.data['playlistList'][nome] = self.mediaList
+                yaml_dump(self.data)
+                action = self.menuPlaylist.addAction(nome, partial(self.load_playlist, nome))
+                if len(self.actionDict) == 0:
+                    self.actionDict[nome] = action
+
+                self.load_playlist(nome)
+            else:
+                print("ciao")
+
+    # def setPlaylistName(self, i):
+    #     if self.playlist.mediaCount() != 0:
+    #         playlistName, is_notEmpty = QInputDialog.getText(self, "playlist", f"save {self.data['playlist'+str(i)+'Name']} as:")
+            
+    #         if playlistName != "":
+    #             if i == 1:
+    #                 self.actionPlaylist1.setText(playlistName)
+    #                 self.data['playlist1Name'] = playlistName
+    #             elif i == 2:
+    #                 self.actionPlaylist2.setText(playlistName)
+    #                 self.data['playlist2Name'] = playlistName
+    #             elif i == 3:
+    #                 self.actionPlaylist3.setText(playlistName)
+    #                 self.data['playlist3Name'] = playlistName
 
                 
-            else:
-                if i == 1:
-                    self.actionPlaylist1.setText(self.data['playlist1Name'])
-                elif i == 2:
-                    self.actionPlaylist2.setText(self.data['playlist2Name'])
-                elif i == 3:
-                    self.actionPlaylist3.setText(self.data['playlist3Name'])
+    #         else:
+    #             if i == 1:
+    #                 self.actionPlaylist1.setText(self.data['playlist1Name'])
+    #             elif i == 2:
+    #                 self.actionPlaylist2.setText(self.data['playlist2Name'])
+    #             elif i == 3:
+    #                 self.actionPlaylist3.setText(self.data['playlist3Name'])
             
-            yaml_dump(self.data)
+    #         yaml_dump(self.data)
 
     def delete_playlist(self):
-        if not self.currentPlaylist == "":
-            self.data[self.currentPlaylist] = []
+        if self.isCustomPlaylist == True:
+            self.data['playlistList'].pop(self.currentPlaylist)
+      
+            self.menuPlaylist.removeAction(self.actionDict[self.currentPlaylist]) 
+            self.playlist.clear()
+            self.model.layoutChanged.emit()
+            self.setWindowTitle("Sputofy")
             yaml_dump(self.data)
+
+            self.statusbar.showMessage("succesfully deleted' "+self.currentPlaylist+"' playlist")
         else:
             self.statusbar.showMessage("can't delete a non custom playlist")
 
