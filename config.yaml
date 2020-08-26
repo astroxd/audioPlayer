@@ -1,23 +1,36 @@
 default_folder: C:\Users\andre\Desktop\sputofy_songs
 last_position:
-  xPos: 444
-  yPos: 405
+  xPos: 477
+  yPos: 133
 last_window_size:
   heigth: 554
   width: 938
 playlistList:
-  cacca:
-  - E:/testFolder/PJaudioPlayer/canzoni_test/1 Hour - Most Epic Anime Mix - BEST OF
-    DECISIVE MOMENTS - Epic Anime OST .mp3
-  - E:/testFolder/PJaudioPlayer/canzoni_test/Legends Never Die ft Against The Current
-    OFFICIAL AUDIO  Worlds 2017 - League of Legends.mp3
-  - E:/testFolder/PJaudioPlayer/canzoni_test/M.mp3
-  - E:/testFolder/PJaudioPlayer/canzoni_test/Nightcore - RISE - (League of Legends
-    _ Lyrics).mp3
-  - E:/testFolder/PJaudioPlayer/canzoni_test/Nightcore - Try-x9WpVoAC3tk.mp3
-  - E:/testFolder/PJaudioPlayer/canzoni_test/Nightcore - What I've Done-ZbHz930cGRo.mp3
+  Steins;Gate:
+  - "C:/Users/andre/Desktop/Steins;Gate/Anata no Eranda Kono Toki wo - Kanako It\u014D\
+    \ - Steins;Gate - fuka ry\u014Diki no d\xE9j\xE0 vu - Opening.mp3"
+  - C:/Users/andre/Desktop/Steins;Gate/Eri Sasaki - GATE OF STEINER _ Steins;Gate
+    0 Ending [2K].mp3
+  - "C:/Users/andre/Desktop/Steins;Gate/Skyclad no Kansokusha - Kanako It\u014D -\
+    \ Steins;Gate - 2\xB0 Ending.mp3"
+  - "C:/Users/andre/Desktop/Steins;Gate/STEINS GATE 0 Ending 2 Full\u300EAsami Imai\
+    \ - World-Line\u300F.mp3"
+  - "C:/Users/andre/Desktop/Steins;Gate/STEINS;GATE - The Movie - Load Region of D\xE9\
+    j\xE0 vu Ending - 'Itsumo Kono Basho de' - Ayane [ENG LYRICS].mp3"
+  - C:/Users/andre/Desktop/Steins;Gate/STEINS;GATE 0 - Amadeus.mp3
+  - C:/Users/andre/Desktop/Steins;Gate/STEINS;GATE 0 Ending 'LAST GAME' by Zwei.mp3
+  - C:/Users/andre/Desktop/Steins;Gate/STEINS;GATE 0 Opening  - 'Fatima' by Kanako
+    Ito.mp3
+  - C:/Users/andre/Desktop/Steins;Gate/Steins;Gate Believe Me.mp3
+  - C:/Users/andre/Desktop/Steins;Gate/Steins;Gate Ending (Toki Tsukasadoru Juuni
+    no Meiyaku).mp3
+  - "C:/Users/andre/Desktop/Steins;Gate/Steins;Gate VN PSP Opening [OP] - 'Space Engineer'\
+    \ by Kanako It\u014D.mp3"
+  - C:/Users/andre/Desktop/Steins;Gate/Technovision Steins;Gate VN Insert song.mp3
+  - "C:/Users/andre/Desktop/Steins;Gate/\u300CSteins;Gate\u300DOpening FULL\u3010\
+    AMV\u3011.mp3"
   po:
   - E:/testFolder/PJaudioPlayer/canzoni_test2/ciao.mp3
   - E:/testFolder/PJaudioPlayer/canzoni_test2/legends.mp3
   - E:/testFolder/PJaudioPlayer/canzoni_test2/Nightcore - What I've Done-ZbHz930cGRo.mp3
-volume: 3
+volume: 8
