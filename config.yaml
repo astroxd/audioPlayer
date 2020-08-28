@@ -1,9 +1,9 @@
 default_folder: C:\Users\andre\Desktop\sputofy_songs
 last_position:
-  xPos: 477
-  yPos: 133
+  xPos: 479
+  yPos: 254
 last_window_size:
-  heigth: 554
+  heigth: 540
   width: 938
 playlistList:
   Steins;Gate:
@@ -33,4 +33,4 @@ playlistList:
   - E:/testFolder/PJaudioPlayer/canzoni_test2/ciao.mp3
   - E:/testFolder/PJaudioPlayer/canzoni_test2/legends.mp3
   - E:/testFolder/PJaudioPlayer/canzoni_test2/Nightcore - What I've Done-ZbHz930cGRo.mp3
-volume: 8
+volume: 1

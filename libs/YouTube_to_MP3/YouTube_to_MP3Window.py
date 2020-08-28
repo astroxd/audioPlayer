@@ -19,6 +19,7 @@ class Ui_Dialog(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("E:/Google Drive/coding/Python/Esercizi/audioplayer/audioPlayer/res/logo.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
+        Dialog.setStyleSheet("border-bottom:0")
         
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -53,7 +54,14 @@ class Ui_Dialog(object):
         self.startBtn.setObjectName("startBtn")
         self.gridLayout.addWidget(self.startBtn, 2, 0, 1, 1)
         
+        self.statusbar = QtWidgets.QStatusBar(Dialog)
+        self.statusbar.setObjectName("statusbar")
+        self.gridLayout.addWidget(self.statusbar, 3, 0, 1, 1)
+    
+
         self.verticalLayout.addLayout(self.gridLayout)
+
+        
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -63,9 +71,13 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "Youtube to MP3"))
         self.youtube_link.setPlaceholderText(_translate("Dialog", "e.g  https://youtu.be/K4DyBUG242c"))
         self.download_folder.setPlaceholderText(_translate("Dialog", "e.g  C:/Download"))
+        
         self.download_folderBtn.setText(_translate("Dialog", "Folder"))
+        self.download_folderBtn.setToolTip(_translate("Dialog", "Select folder where save songs"))
+
         self.startBtn.setText(_translate("Dialog", "Start"))
         self.startBtn.setShortcut(_translate("Dialog", "Enter"))
+        self.startBtn.setToolTip(_translate("Dialog", "Start conversion"))
 
 
 # if __name__ == "__main__":

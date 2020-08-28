@@ -1,7 +1,6 @@
-
+## !/usr/bin/env python
 from __future__ import unicode_literals
 
-import datetime  # in teoria l'ho rimosso creando la funzione time_format()#TODO
 import os
 import random
 import sys
@@ -12,8 +11,8 @@ from functools import partial
 import yaml
 import youtube_dl
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QAbstractListModel, Qt, QTimer, QUrl
-from PyQt5.QtGui import QIcon, QPixmap, QKeySequence, QPalette, QColor
+from PyQt5.QtCore import QAbstractListModel, Qt, QTimer, QUrl, QStandardPaths
+from PyQt5.QtGui import QIcon, QPixmap, QKeySequence, QPalette, QColor, QStatusTipEvent
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimedia import (QMediaContent, QMediaPlayer,
                                 QMediaPlayerControl, QMediaPlaylist)
@@ -24,11 +23,7 @@ from PyQt5.QtWidgets import (QFileDialog, QHBoxLayout, QLineEdit, QMainWindow,
 
 from libs.YouTube_to_MP3.YouTube_to_MP3Window import Ui_Dialog
 from libs.SputofyGui.SputofyGui import Ui_MainWindow
-
-
-base_path = os.path.split(os.path.abspath(__file__))[0]
-res_path = f"{base_path}\\res"
-
+from libs.paths import *
 
 
 def time_format(seconds): # format seconds into hh:mm:ss
@@ -95,14 +90,15 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
 
         self.startBtn.clicked.connect(self.startDownload)
         self.download_folderBtn.clicked.connect(self.openDownloadFolder)
-        
 
     def openDownloadFolder(self):
         downloadFolderName = QFileDialog.getExistingDirectory(
             self, "open folder", "c:\\")
         self.download_folder.setText(downloadFolderName)
 
+    
     def startDownload(self):  
+        
         YTlink = self.youtube_link.text()
 
         if self.download_folder.text() != "":
@@ -129,15 +125,21 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             if YTlink: 
+                # self.statusbar.showMessage("Downloading...", 4000)#TODO
                 try:
                     ydl.download([YTlink])
-                
+                    info_dict = ydl.extract_info(YTlink)
+                    video_title = info_dict.get('title', None)
+                    self.statusbar.showMessage(f"[downloaded] {video_title}", 4000)
                 except:
+                    self.statusbar.showMessage("[ERROR]:cannot download this video", 4000)
                     print("insert a valid url")
-
-            Window().statusbar.showMessage("ciao")#TODO 
-            self.youtube_link.setText("")#TODO 
-            self.close()
+            else:
+                self.statusbar.showMessage("[ERROR]:insert a valid url", 4000)
+                print("cacca")
+            
+            self.youtube_link.setText("")
+            # self.close()
             # gettin id and title of song(don't need)
             # info_dict = ydl.extract_info(YTlink)
             # video_id = info_dict.get("id", None)
@@ -175,7 +177,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # open YouTubeToMP3 using button
         self.actionYT_MP3.triggered.connect(self.YouTubeToMP3.show)
-
         #===========================  mediaplayer  ==============================
         
         # create media player object
@@ -186,7 +187,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # open button
         self.actionOpen_Song.triggered.connect(self.open_song)
-        # self.actionOpen_File.triggered.connect(self.open_song)
         self.actionOpen_Folder.triggered.connect(self.open_folder)
 
         
@@ -307,14 +307,22 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.actionDict[item] = self.menuPlaylist.addAction(item, partial(self.load_playlist, item))
 
     
-
+    #     self.barMessage = ""
     
     
-    
-
+    # def event(self, e):
+    #     if e.type() == QtCore.QEvent.StatusTip:
+    #         if e.tip() == '':
+    #             e = QStatusTipEvent(self.barMessage)  # Set this to whatever you like
+    #     return super().event(e)
         
-        
-   
+    def mousePressEvent(self, event):
+        focused_widget = QtWidgets.QApplication.focusWidget()
+        try:
+            focused_widget.clearFocus()
+        except:
+            pass
+        QMainWindow.mousePressEvent(self, event)
 
 #================== Songs opening ==================#
     
@@ -377,7 +385,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(song)))
             self.mediaList.append(song)
 
-
         self.playlist.setCurrentIndex(0)
 
         self.playBtn.setEnabled(True)
@@ -393,6 +400,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.currentPlaylist = i
         self.setTitle()
+        self.statusbar.showMessage(f'Playlist "{i}" loaded', 4000)
             
     def setTitle(self):
         if self.isCustomPlaylist == False:
@@ -637,7 +645,7 @@ if __name__ == "__main__":
     palette.setColor(QPalette.Highlight, QColor(255, 112, 0 ))
     palette.setColor(QPalette.HighlightedText, Qt.black)
     app.setPalette(palette)
-    # app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
+    app.setStyleSheet("QToolTip { color: #FF7000; background-color: #000; border: 1px solid #FF7000; }")
     
     window = Window()
     window.show()
@@ -645,7 +653,7 @@ if __name__ == "__main__":
 
     sys.exit(app.exec_())
 
-#TODO palette
+
 # Icons'author links
 #https://fontawesome.com/icons/headphones?style=solid
 #https://fontawesome.com/icons/backward?style=solid
