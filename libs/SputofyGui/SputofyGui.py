@@ -24,7 +24,6 @@ class Ui_MainWindow(object):
         
         self.loopBtn = QtWidgets.QPushButton(self.centralwidget)
         loopIcon = QtGui.QIcon()
-        # loopIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "loopIconOFF.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         loopIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "loopIconOFF.svg")))
         self.loopBtn.setIcon(loopIcon)
         self.loopBtn.setObjectName("loopBtn")
@@ -33,7 +32,6 @@ class Ui_MainWindow(object):
         
         self.prevBtn = QtWidgets.QPushButton(self.centralwidget)
         prevIcon = QtGui.QIcon()
-        # prevIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "backwardIcon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         prevIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "backwardIcon.svg")))
         self.prevBtn.setIcon(prevIcon)
         self.prevBtn.setObjectName("prevBtn")
@@ -42,7 +40,6 @@ class Ui_MainWindow(object):
         
         self.playBtn = QtWidgets.QPushButton(self.centralwidget)
         playIcon = QtGui.QIcon()
-        # playIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "playIcon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         playIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "playIcon.svg")))
         self.playBtn.setIcon(playIcon)
         self.playBtn.setObjectName("playBtn")
@@ -51,7 +48,6 @@ class Ui_MainWindow(object):
         
         self.nextBtn = QtWidgets.QPushButton(self.centralwidget)
         nextIcon = QtGui.QIcon()
-        # nextIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "forwardIcon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         nextIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "forwardIcon.svg")))
         self.nextBtn.setIcon(nextIcon)
         self.nextBtn.setObjectName("nextBtn")
@@ -60,7 +56,6 @@ class Ui_MainWindow(object):
         
         self.randomBtn = QtWidgets.QPushButton(self.centralwidget)
         randomIcon = QtGui.QIcon()
-        # randomIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "randomIconOFF.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         randomIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "randomIconOFF.svg")))
         self.randomBtn.setIcon(randomIcon)
         self.randomBtn.setObjectName("randomBtn")
@@ -104,7 +99,6 @@ class Ui_MainWindow(object):
         
         self.volumeBtn = QtWidgets.QPushButton(self.centralwidget)
         volumeIcon = QtGui.QIcon()
-        # volumeIcon.addPixmap(QtGui.QPixmap(os.path.join(gui_specific_path, "volumeIcon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         volumeIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "volumeIcon.svg")))
         self.volumeBtn.setIcon(volumeIcon)
         self.volumeBtn.setObjectName("volumeBtn")
