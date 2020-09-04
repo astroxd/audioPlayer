@@ -76,7 +76,7 @@ class Ui_Dialog(object):
         self.download_folderBtn.setToolTip(_translate("Dialog", "Select folder where save songs"))
 
         self.startBtn.setText(_translate("Dialog", "Start"))
-        self.startBtn.setShortcut(_translate("Dialog", "Enter"))
+        self.startBtn.setShortcut(_translate("Dialog", "Return"))
         self.startBtn.setToolTip(_translate("Dialog", "Start conversion"))
 
 

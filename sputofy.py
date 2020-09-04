@@ -7,23 +7,26 @@ import sys
 
 from functools import partial
 
+import pafy
+from mhyt import yt_download
 
 import yaml
 import youtube_dl
+
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QAbstractListModel, Qt, QTimer, QUrl, QStandardPaths
-from PyQt5.QtGui import QIcon, QPixmap, QKeySequence, QPalette, QColor, QStatusTipEvent
-from PyQt5.QtMultimedia import *
+from PyQt5.QtCore import QAbstractListModel, Qt, QUrl, QPoint
+from PyQt5.QtGui import QIcon, QPixmap, QPalette, QColor, QCursor
 from PyQt5.QtMultimedia import (QMediaContent, QMediaPlayer,
-                                QMediaPlayerControl, QMediaPlaylist)
+                            QMediaPlayerControl, QMediaPlaylist, QMediaResource)
 from PyQt5.QtMultimediaWidgets import *
-from PyQt5.QtWidgets import (QFileDialog, QHBoxLayout, QLineEdit, QMainWindow,
-                             QPushButton, QStyle, QVBoxLayout, QShortcut, QInputDialog, QAction)
+from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QStyle, 
+                                QShortcut, QInputDialog, QAction, QMenu, QListWidgetItem, QPushButton)
 
 
 from libs.YouTube_to_MP3.YouTube_to_MP3Window import Ui_Dialog
 from libs.SputofyGui.SputofyGui import Ui_MainWindow
 from libs.paths import *
+
 
 
 def time_format(seconds): # format seconds into hh:mm:ss
@@ -65,6 +68,7 @@ class config():
         self.data['last_window_size']['heigth'] = self.height
         yaml_dump(self.data)
 
+
 class PlaylistModel(QAbstractListModel):
     def __init__(self, playlist, *args, **kwargs):
         super(PlaylistModel, self).__init__(*args, **kwargs)
@@ -73,7 +77,7 @@ class PlaylistModel(QAbstractListModel):
     def data(self, index, role):
         if role == Qt.DisplayRole:
             media = self.playlist.media(index.row())
-            song = media.canonicalUrl().fileName().replace(".mp3","")
+            song = os.path.splitext(media.canonicalUrl().fileName())[0]# remove file extension
             songPosition = f"#{index.row()+1}    {song}"
             return songPosition
 
@@ -124,6 +128,17 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
 
         }
 
+        # url = "https://youtu.be/p7pERnZ9RRc"
+        # video = pafy.new(url)
+
+        # audiostreams = video.audiostreams
+        # for a in audiostreams:
+        #     print(a.bitrate, a.extension, a.get_filesize())
+        # audiostreams[2].download()
+        
+        # bestaudio = video.getbestaudio()
+        # bestaudio.download()
+
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             if YTlink: 
                 try:
@@ -170,7 +185,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # create media player object
         self.mediaPlayer = QMediaPlayer(None)
-
 
         # open button
         self.actionOpen_Song.triggered.connect(self.open_song)
@@ -221,7 +235,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mediaPlayer.positionChanged.connect(self.position_changed)# duration slider progress
         self.mediaPlayer.stateChanged.connect(self.player_state)# see when it's playing or in pause 
         self.mediaPlayer.volumeChanged.connect(self.volumeIcon)# change volumebtn icon
-        
+
         #===========================  playlist  ==============================
         
         # create the playlist
@@ -238,8 +252,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.playlist.currentIndexChanged.connect(self.playlist_position_changed)
         selection_model = self.playlistView.selectionModel()
         selection_model.selectionChanged.connect(self.playlist_selection_changed)
-        
-        
+
         #===========================  playlist function  ==============================
         
         self.mediaList = []# array of loaded songs
@@ -273,15 +286,44 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # delete current playlist
         self.actionDeletePlaylist.triggered.connect(self.delete_playlist)
 
+        # remove all songs
+        # self.actionClearQueue.triggered.connect(self.clear_queue)
+
         # load playlist
         self.playlistList = self.data['playlistList']
         self.actionDict = {}
         for action in self.playlistList:
             self.actionDict[action] = self.menuPlaylist.addAction(action, partial(self.load_playlist, action))
-
+        if len(self.playlistList) == 0:
+            self.menuPlaylist.menuAction().setVisible(False)
         
-    
+        self.posizione = 0
 
+        # self.playlistView.installEventFilter(self)
+
+    # def eventFilter(self, obj, event):
+    #     if event.type() == QtCore.QEvent.MouseButtonPress:
+    #         if event.button() == QtCore.Qt.LeftButton:
+    #             print(obj.objectName(), "cacca")
+    #             print(self.playlistView.indexAt(event.pos()))
+    #     return super().eventFilter(self, obj, event)
+    
+    # def on_itemClicked(self, item):
+    #     print('in on_itemClicked')
+        # print('item is {}'.format(item))
+        # i = self.listWidget.item(item)
+        # self.playlistView.removeItemWidget(item)
+    
+    # def contextMenuEvent(self, event):
+    #     menu = QMenu()
+    #     actionURL = menu.addAction("cacca")
+    #     actionURL.triggered.connect(lambda: self.test(event))
+        
+    #     # self.menu.popup(QCursor.pos())
+    #     menu.exec_(self.mapToGlobal(event.pos()))
+    
+    # def test(self, event):
+    #     self.playlist.setCurrentIndex(self.posizione+1)
 #================== Songs opening ==================#
     
     def open_folder(self):
@@ -335,7 +377,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.playlist.mediaCount() == 1:# if there is 1 song and you add another 
                 self.playlist.setCurrentIndex(0)
                 self.mediaPlayer.pause()
-            
+           
     def load_playlist(self, i):
         self.playlist.clear()
         self.mediaList.clear()
@@ -364,12 +406,19 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # adjust play/pause icon
         self.mediaPlayer.pause()
+
+        # self.playlist_array()
+        # print(self.mediaList)
             
     def setTitle(self):
-        if self.isCustomPlaylist == False:
-            self.setWindowTitle(f"Sputofy - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
-        else:
-            self.setWindowTitle(f"Sputofy - {self.currentPlaylist} - {self.playlist.currentMedia().canonicalUrl().fileName()} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
+        if self.playlist.mediaCount() == 0:
+            self.setWindowTitle("Sputofy")
+        
+        else:    
+            if self.isCustomPlaylist == False:
+                self.setWindowTitle(f"Sputofy - {os.path.splitext(self.playlist.currentMedia().canonicalUrl().fileName())[0]} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
+            else:
+                self.setWindowTitle(f"Sputofy - {self.currentPlaylist} - {os.path.splitext(self.playlist.currentMedia().canonicalUrl().fileName())[0]} - {self.playlist.currentIndex()+1}/{self.playlist.mediaCount()}")
             
 #=======================================================# 
 
@@ -409,7 +458,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         index = self.playlist.mediaCount()
         list = []
         for i in range(index):
-            print(self.playlist.media(i).canonicalUrl().path())
+            cacca = (self.playlist.media(i).canonicalUrl().path())
+            print(cacca)
             list.append(self.playlist.media(i).canonicalUrl().fileName())
         return list
 
@@ -424,8 +474,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 action = self.menuPlaylist.addAction(name, partial(self.load_playlist, name))
                 
-                # if len(self.actionDict) == 0:
-                #     self.actionDict[name] = action
+                if len(self.actionDict) == 0:
+                    self.actionDict[name] = action
+                    self.menuPlaylist.menuAction().setVisible(True)
 
                 self.load_playlist(name)# instantly loading the new playlist
             else:
@@ -442,12 +493,21 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.model.layoutChanged.emit()
             self.setWindowTitle("Sputofy")
+            
+            if len(self.actionDict) == 1:
+                self.menuPlaylist.menuAction().setVisible(False)
 
             yaml_dump(self.data)
 
-            self.statusbar.showMessage("succesfully deleted' "+self.currentPlaylist+"' playlist", 4000)
+            self.statusbar.showMessage('succesfully deleted "'+self.currentPlaylist+'" playlist', 4000)
         else:
-            self.statusbar.showMessage("can't delete a non custom playlist", 4000)
+            self.statusbar.showMessage("cannot delete a non custom playlist", 4000)
+
+    def clear_queue(self):
+        self.playlist.clear()
+        self.mediaList.clear()
+        self.playBtn.setEnabled(False)
+        self.model.layoutChanged.emit()
 
     def playlist_position_changed(self, i):
         if i > -1:
@@ -457,6 +517,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def playlist_selection_changed(self, ix):
         # We receive a QItemSelection from selectionChanged.
         i = ix.indexes()[0].row()
+        self.posizione = i
         self.playlist.setCurrentIndex(i)
         self.mediaPlayer.play()
 
@@ -608,7 +669,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
-    
+
     #255,112,0 = orange
     #53,53,53 and 25,25,25 = black
 

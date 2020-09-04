@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>E:/Google Drive/coding/Python/Esercizi/audioplayer/audioPlayer/res/logo.svg</normaloff>E:/Google Drive/coding/Python/Esercizi/audioplayer/audioPlayer/res/logo.svg</iconset>
+    <normaloff>../../res/logo.svg</normaloff>../../res/logo.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -58,7 +58,7 @@
         <string>Start</string>
        </property>
        <property name="shortcut">
-        <string>Enter</string>
+        <string>Return</string>
        </property>
       </widget>
      </item>
