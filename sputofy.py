@@ -287,43 +287,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionDeletePlaylist.triggered.connect(self.delete_playlist)
 
         # remove all songs
-        # self.actionClearQueue.triggered.connect(self.clear_queue)
+        self.actionClearQueue.triggered.connect(self.clear_queue)
 
         # load playlist
         self.playlistList = self.data['playlistList']
-        self.actionDict = {}
-        for action in self.playlistList:
+        self.actionDict = {} # dictionary of action Objects
+
+        for action in self.data['playlistList']:
             self.actionDict[action] = self.menuPlaylist.addAction(action, partial(self.load_playlist, action))
-        if len(self.playlistList) == 0:
+        
+        if len(self.data['playlistList']) == 0:
             self.menuPlaylist.menuAction().setVisible(False)
-        
-        self.posizione = 0
 
-        # self.playlistView.installEventFilter(self)
-
-    # def eventFilter(self, obj, event):
-    #     if event.type() == QtCore.QEvent.MouseButtonPress:
-    #         if event.button() == QtCore.Qt.LeftButton:
-    #             print(obj.objectName(), "cacca")
-    #             print(self.playlistView.indexAt(event.pos()))
-    #     return super().eventFilter(self, obj, event)
-    
-    # def on_itemClicked(self, item):
-    #     print('in on_itemClicked')
-        # print('item is {}'.format(item))
-        # i = self.listWidget.item(item)
-        # self.playlistView.removeItemWidget(item)
-    
-    # def contextMenuEvent(self, event):
-    #     menu = QMenu()
-    #     actionURL = menu.addAction("cacca")
-    #     actionURL.triggered.connect(lambda: self.test(event))
-        
-    #     # self.menu.popup(QCursor.pos())
-    #     menu.exec_(self.mapToGlobal(event.pos()))
-    
-    # def test(self, event):
-    #     self.playlist.setCurrentIndex(self.posizione+1)
 #================== Songs opening ==================#
     
     def open_folder(self):
@@ -350,7 +325,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.model.layoutChanged.emit()# load songs in list view
             self.setTitle()
 
-            
             self.mediaPlayer.pause()# adjust play/pause icon
 
     def open_song(self):
@@ -378,14 +352,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.playlist.setCurrentIndex(0)
                 self.mediaPlayer.pause()
            
-    def load_playlist(self, i):
+    def load_playlist(self, playlistName):
         self.playlist.clear()
         self.mediaList.clear()
         
         #reload config
         self.data = yaml_loader()
         
-        for song in self.data['playlistList'][i]:
+        for song in self.data['playlistList'][playlistName]:
             self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(song)))
             self.mediaList.append(song)
 
@@ -399,17 +373,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.model.layoutChanged.emit()# load songs in list view
         
-        self.currentPlaylist = i# name of current loaded playlist
+        self.currentPlaylist = playlistName# name of current loaded playlist
         self.setTitle()
         
-        self.statusbar.showMessage(f'Playlist "{i}" loaded', 4000)
+        self.statusbar.showMessage(f'Playlist "{playlistName}" loaded', 4000)
+        self.menuPlaylist.menuAction().setVisible(True)
         
         # adjust play/pause icon
         self.mediaPlayer.pause()
-
-        # self.playlist_array()
-        # print(self.mediaList)
-            
+  
     def setTitle(self):
         if self.playlist.mediaCount() == 0:
             self.setWindowTitle("Sputofy")
@@ -456,27 +428,25 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     #TODO useless
     def playlist_array(self):
         index = self.playlist.mediaCount()
-        list = []
+        mediaList = []
         for i in range(index):
-            cacca = (self.playlist.media(i).canonicalUrl().path())
-            print(cacca)
-            list.append(self.playlist.media(i).canonicalUrl().fileName())
-        return list
+            # songPath = (self.playlist.media(path).canonicalUrl().path())#.split("/",1)[1]
+            # mediaList.append(songPath)
+            # print(self.playlist.media(i).canonicalUrl().path())
+            mediaList.append(self.playlist.media(i).canonicalUrl().fileName())
+        return mediaList
 
     def custom_playlist(self):
         if not self.playlist.mediaCount() == 0:
             name, is_notEmpty = QInputDialog.getText(self, "playlist", "save playlist as:")
             
             if name != "":
-                self.playlistList[name] = self.mediaList
+
                 self.data['playlistList'][name] = self.mediaList
                 yaml_dump(self.data)
-
-                action = self.menuPlaylist.addAction(name, partial(self.load_playlist, name))
                 
-                if len(self.actionDict) == 0:
-                    self.actionDict[name] = action
-                    self.menuPlaylist.menuAction().setVisible(True)
+                # addin new action Object to dictionary
+                self.actionDict[name] = self.menuPlaylist.addAction(name, partial(self.load_playlist, name))
 
                 self.load_playlist(name)# instantly loading the new playlist
             else:
@@ -486,16 +456,19 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def delete_playlist(self):
         if self.isCustomPlaylist == True:
-            self.data['playlistList'].pop(self.currentPlaylist)
-      
-            self.menuPlaylist.removeAction(self.actionDict[self.currentPlaylist]) 
-            self.playlist.clear()
+            
+            if len(self.data['playlistList']) == 1:
+                self.menuPlaylist.menuAction().setVisible(False)
 
+            self.data['playlistList'].pop(self.currentPlaylist)# remove playlist from dictionary
+
+            
+            self.menuPlaylist.removeAction(self.actionDict[self.currentPlaylist])# remove relative action
+            self.actionDict.pop(self.currentPlaylist)# remove relative action Object
+
+            self.playlist.clear()
             self.model.layoutChanged.emit()
             self.setWindowTitle("Sputofy")
-            
-            if len(self.actionDict) == 1:
-                self.menuPlaylist.menuAction().setVisible(False)
 
             yaml_dump(self.data)
 

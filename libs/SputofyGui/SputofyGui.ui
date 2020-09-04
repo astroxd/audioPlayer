@@ -233,6 +233,8 @@
     <addaction name="separator"/>
     <addaction name="actionCreatePlaylist"/>
     <addaction name="actionDeletePlaylist"/>
+    <addaction name="separator"/>
+    <addaction name="actionClearQueue"/>
    </widget>
    <widget class="QMenu" name="menuPlaylist">
     <property name="title">
@@ -300,6 +302,9 @@
    <property name="toolTip">
     <string>Create playlist using current songs</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionDeletePlaylist">
    <property name="text">
@@ -307,6 +312,17 @@
    </property>
    <property name="toolTip">
     <string>Delete current playlist</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionClearQueue">
+   <property name="text">
+    <string>Clear Queue</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>

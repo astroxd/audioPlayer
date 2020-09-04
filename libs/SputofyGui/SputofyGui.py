@@ -240,23 +240,24 @@ class Ui_MainWindow(object):
         self.actionYT_MP3.setToolTip(_translate("MainWindow", "Convert Youtube link to MP3 file"))
         
         self.actionLoopIt.setText(_translate("MainWindow", "Loop it: OFF"))
-        self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+L"))
         self.actionLoopIt.setToolTip(_translate("MainWindow", "Repeat current song"))
         self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+L"))
 
         self.actionShuffle.setText(_translate("MainWindow", "Shuffle"))
-        self.actionShuffle.setShortcut(_translate("MainWindow", "Ctrl+R"))
         self.actionShuffle.setToolTip(_translate("MainWindow", "Change song\'s order"))
         self.actionShuffle.setShortcut(_translate("MainWindow", "Ctrl+R"))
 
         self.actionCreatePlaylist.setText(_translate("MainWindow", "Playlist This"))
         self.actionCreatePlaylist.setToolTip(_translate("MainWindow", "Create playlist using current songs"))
-        
+        self.actionCreatePlaylist.setShortcut(_translate("MainWindow", "Ctrl+N"))
+
         self.actionDeletePlaylist.setText(_translate("MainWindow", "Delete Playlist"))
         self.actionDeletePlaylist.setToolTip(_translate("MainWindow", "Delete current playlist"))
+        self.actionDeletePlaylist.setShortcut(_translate("MainWindow", "Ctrl+D"))
 
         self.actionClearQueue.setText(_translate("MainWindow", "Clear Queue"))
         self.actionClearQueue.setToolTip(_translate("MainWindow", "Remove all songs"))
+        self.actionClearQueue.setShortcut(_translate("MainWindow", "Ctrl+E"))
 
 # if __name__ == "__main__":
 #     import sys
