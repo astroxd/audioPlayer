@@ -157,7 +157,10 @@ class Ui_MainWindow(object):
         self.actionYT_MP3 = QtWidgets.QAction(MainWindow)
         self.actionYT_MP3.setObjectName("actionYT_MP3")
         
+        self.actionInfo = QtWidgets.QAction(MainWindow)
+        self.actionInfo.setObjectName("actionInfo")
         
+
         self.actionLoopIt = QtWidgets.QAction(MainWindow)
         self.actionLoopIt.setObjectName("actionLoopIt")
         
@@ -176,6 +179,8 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionOpen_Song)
         self.menuFile.addAction(self.actionOpen_Folder)
         self.menuFile.addAction(self.actionYT_MP3)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionInfo)
         
         self.menuSong.addAction(self.actionLoopIt)
         self.menuSong.addAction(self.actionShuffle)
@@ -239,6 +244,9 @@ class Ui_MainWindow(object):
         self.actionYT_MP3.setShortcut(_translate("MainWindow", "Ctrl+T"))
         self.actionYT_MP3.setToolTip(_translate("MainWindow", "Convert Youtube link to MP3 file"))
         
+        self.actionInfo.setText(_translate("MainWindow", "Info"))
+        self.actionInfo.setToolTip(_translate("MainWindow", "Info about the app"))
+
         self.actionLoopIt.setText(_translate("MainWindow", "Loop it: OFF"))
         self.actionLoopIt.setToolTip(_translate("MainWindow", "Repeat current song"))
         self.actionLoopIt.setShortcut(_translate("MainWindow", "Ctrl+L"))

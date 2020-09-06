@@ -20,7 +20,7 @@ from PyQt5.QtMultimedia import (QMediaContent, QMediaPlayer,
                             QMediaPlayerControl, QMediaPlaylist, QMediaResource)
 from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QStyle, 
-                                QShortcut, QInputDialog, QAction, QMenu, QListWidgetItem, QPushButton)
+                                QShortcut, QInputDialog, QAction, QMenu, QListWidgetItem, QPushButton, QMessageBox)
 
 
 from libs.YouTube_to_MP3.YouTube_to_MP3Window import Ui_Dialog
@@ -181,6 +181,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # open YouTubeToMP3 using button
         self.actionYT_MP3.triggered.connect(self.YouTubeToMP3.showWindow)
 
+        # info action
+        self.actionInfo.triggered.connect(self.infoHandle)
+
         #===========================  mediaplayer  ==============================
         
         # create media player object
@@ -290,7 +293,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionClearQueue.triggered.connect(self.clear_queue)
 
         # load playlist
-        self.playlistList = self.data['playlistList']
+        # self.playlistList = self.data['playlistList']
         self.actionDict = {} # dictionary of action Objects
 
         for action in self.data['playlistList']:
@@ -328,7 +331,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.mediaPlayer.pause()# adjust play/pause icon
 
     def open_song(self):
-        filename, _ = QFileDialog.getOpenFileName(self, "Open Song", "c:\\")
+        filename, _ = QFileDialog.getOpenFileName(self, "Open Song", "c:\\", "mp3 Audio(.mp3)")
 
         if filename != '':
             if self.playlistIsEmpty == False:
@@ -637,6 +640,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         yaml_dump(self.data)
 
+    def infoHandle(self):
+        # info = "©2020\na_str0\n\n"
+        info = "Sputofy\n1.0.0\n©2020"+\
+        "Sputofy is a free audio player based on the converted youtube songs made by a_str0\n\n"+\
+        "Sputofy is written using python 3.x and PyQt5 modules"
+                
+        msg = QMessageBox.about(self, "About", info)
     
 
 if __name__ == "__main__":
