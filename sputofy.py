@@ -1,17 +1,16 @@
 ## !/usr/bin/env python
-from __future__ import unicode_literals
 
 import os
 import random
 import sys
+import re
 
 from functools import partial
 
-import pafy
-from mhyt import yt_download
-
 import yaml
-import youtube_dl
+
+from pytube import YouTube, Playlist
+import subprocess
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QAbstractListModel, Qt, QUrl, QPoint
@@ -68,7 +67,6 @@ class config():
         self.data['last_window_size']['heigth'] = self.height
         yaml_dump(self.data)
 
-
 class PlaylistModel(QAbstractListModel):
     def __init__(self, playlist, *args, **kwargs):
         super(PlaylistModel, self).__init__(*args, **kwargs)
@@ -116,42 +114,50 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
                 download_folder = yaml_loader()['default_folder']
                 print(f"\x1b[1;34;40mfolder already existing : {download_folder}\x1b[0;37;40m")
         
-        # array with conversion options
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-            'outtmpl': download_folder+'/%(title)s.%(ext)s',
 
-        }
+        if YTlink:
+            try:
+                self.statusbar.showMessage("Downloading...")
+                
+                if "playlist" in YTlink:
+                    playlist = Playlist(YTlink)
+                    playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
+                    playlist_title = playlist.title()
 
-        # url = "https://youtu.be/p7pERnZ9RRc"
-        # video = pafy.new(url)
+                    for video in playlist.videos:
+                        song = video.streams.filter(only_audio=True).first()
 
-        # audiostreams = video.audiostreams
-        # for a in audiostreams:
-        #     print(a.bitrate, a.extension, a.get_filesize())
-        # audiostreams[2].download()
+                        song.download(download_folder)
+                        song_title = song.default_filename
+
+                        self.converter(download_folder, song_title)
+                    self.statusbar.showMessage(f"[downloaded] {playlist_title}")
+                
+                else:
+                    yt = YouTube(YTlink)
+                    song = yt.streams.filter(only_audio=True).first()
+
+                    song.download(download_folder)
+                    song_title = song.default_filename
+
+                    self.converter(download_folder, song_title)
+            
+            except Exception as e:
+                self.statusbar.showMessage(f"[ERROR]:cannot download video")
+                print(e)
+        else:
+            self.statusbar.showMessage("[ERROR]:insert a valid url")
         
-        # bestaudio = video.getbestaudio()
-        # bestaudio.download()
+        
+        
+    def converter(self, path, title):
+        command = "ffmpeg -y -i "+path+"/"+f'"{title}"'+" -ab 160k -ac 2 -ar 44100 -vn "+path+f'/"{os.path.splitext(title)[0]}"'+".mp3"
+    
+        subprocess.call(command, shell=True)
+        os.remove(os.path.join(path, title))
 
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            if YTlink: 
-                try:
-                    ydl.download([YTlink])
-                    info_dict = ydl.extract_info(YTlink)
-                    video_title = info_dict.get('title', None)
-                    
-                    self.statusbar.showMessage(f"[downloaded] {video_title}", 4000)
-                    self.close()
-                except:
-                    self.statusbar.showMessage("[ERROR]:cannot download this video", 4000)
-            else:
-                self.statusbar.showMessage("[ERROR]:insert a valid url", 4000)
+        self.statusbar.showMessage(f"[downloaded] {os.path.splitext(title)[0]}")
+
             
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
@@ -293,7 +299,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionClearQueue.triggered.connect(self.clear_queue)
 
         # load playlist
-        # self.playlistList = self.data['playlistList']
         self.actionDict = {} # dictionary of action Objects
 
         for action in self.data['playlistList']:
@@ -331,7 +336,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.mediaPlayer.pause()# adjust play/pause icon
 
     def open_song(self):
-        filename, _ = QFileDialog.getOpenFileName(self, "Open Song", "c:\\", "mp3 Audio(.mp3)")
+        filename, _ = QFileDialog.getOpenFileName(self, "Open Song", "c:\\")
 
         if filename != '':
             if self.playlistIsEmpty == False:
@@ -444,14 +449,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             name, is_notEmpty = QInputDialog.getText(self, "playlist", "save playlist as:")
             
             if name != "":
-
-                self.data['playlistList'][name] = self.mediaList
-                yaml_dump(self.data)
                 
-                # addin new action Object to dictionary
-                self.actionDict[name] = self.menuPlaylist.addAction(name, partial(self.load_playlist, name))
+                if name in self.data['playlistList']:
+                    self.statusbar.showMessage("playlist not created (name is already used)", 4000)
+                else:
+                    self.data['playlistList'][name] = self.mediaList
+                    yaml_dump(self.data)
+                
+                    # addin new action Object to dictionary
+                    self.actionDict[name] = self.menuPlaylist.addAction(name, partial(self.load_playlist, name))
 
-                self.load_playlist(name)# instantly loading the new playlist
+                    self.load_playlist(name)# instantly loading the new playlist
             else:
                 self.statusbar.showMessage("playlist not created (you should give a name to your baby :/)", 4000)
         else:
@@ -660,7 +668,7 @@ if __name__ == "__main__":
     palette.setColor(QPalette.Window, QColor(53, 53, 53))
     palette.setColor(QPalette.WindowText, QColor(255, 112, 0 ))
     palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    palette.setColor(QPalette.AlternateBase, QColor(45, 45, 45))
     # palette.setColor(QPalette.ToolTipBase, QColor(255, 112, 0 ))
     # palette.setColor(QPalette.ToolTipText, QColor(255, 112, 0 ))
     palette.setColor(QPalette.Text, QColor(255, 112, 0 ))

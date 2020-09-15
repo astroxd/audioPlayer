@@ -118,6 +118,8 @@ class Ui_MainWindow(object):
         self.gridLayout.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
         
         self.playlistView = QtWidgets.QListView(self.centralwidget)
+        self.playlistView.setAlternatingRowColors(True)
+        self.playlistView.setUniformItemSizes(True)
         self.playlistView.setObjectName("playlistView")
         
         self.gridLayout.addWidget(self.playlistView, 0, 0, 1, 1)
