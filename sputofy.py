@@ -58,10 +58,9 @@ class config():
 
     def default_folder(self):# get user in order to create the folder in the desktop
         user = os.getlogin()
-        default_folderConfig = {
-            "default_folder": "C:\\Users\\"+user+"\\Desktop\\sputofy_songs"}
-        yaml_dump(default_folderConfig)
-
+        self.data['default_folder'] = "C:\\Users\\"+user+"\\Desktop\\sputofy_songs"
+        yaml_dump(self.data)
+        
     def last_window_size(self):
         self.data['last_window_size']['width'] = self.width
         self.data['last_window_size']['heigth'] = self.height
