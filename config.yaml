@@ -1,9 +1,9 @@
-default_folder: 
+default_folder: ''
 last_position:
-  xPos: 108
-  yPos: 115
+  xPos: 176
+  yPos: 254
 last_window_size:
-  heigth: 540
+  height: 540
   width: 938
 playlistList: {}
 volume: 100

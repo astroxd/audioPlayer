@@ -62,12 +62,12 @@ class config():
 
     def default_folder(self):# get user in order to create the folder in the desktop
         user = os.getlogin()
-        self.data['default_folder'] = "C:\\Users\\"+user+"\\Desktop\\sputofy_songs"
+        self.data['default_folder'] = f"C:\\Users\\{user}\\Desktop\\sputofy_songs"
         yaml_dump(self.data)
         
     def last_window_size(self):
         self.data['last_window_size']['width'] = self.width
-        self.data['last_window_size']['heigth'] = self.height
+        self.data['last_window_size']['height'] = self.height
         yaml_dump(self.data)
 
 class PlaylistModel(QAbstractListModel):
@@ -189,7 +189,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.xCor = self.data['last_position']['xPos']
         self.yCor = self.data['last_position']['yPos']
         self.widthSize = self.data['last_window_size']['width']
-        self.heightSize = self.data['last_window_size']['heigth']
+        self.heightSize = self.data['last_window_size']['height']
 
         self.setGeometry(self.xCor, self.yCor, self.widthSize,self.heightSize)
         
@@ -653,10 +653,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         height = self.height()
         
         self.data['last_window_size']['width'] = width
-        self.data['last_window_size']['heigth'] = height
+        self.data['last_window_size']['height'] = height
         
         # retrieve volume
         self.data['volume'] = self.mediaPlayer.volume()
+
+        # retrieve user
+        user = os.getlogin()
+        self.data['default_folder'] = f"C:\\Users\\{user}\\Desktop\\sputofy_songs"
 
         yaml_dump(self.data)
 
