@@ -1,4 +1,8 @@
 ## !/usr/bin/env python
+import ffmpy
+from ffmpy import FFmpeg
+
+
 
 import os
 import random
@@ -150,9 +154,18 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
         
         
     def converter(self, path, title):
-        command = "ffmpeg -y -i "+path+"/"+f'"{title}"'+" -ab 160k -ac 2 -ar 44100 -vn "+path+f'/"{os.path.splitext(title)[0]}"'+".mp3"
+        ff = FFmpeg(
+        executable=f"{libs_path}\\ffmpeg.exe",
+        inputs={f"{path}\\{title}": '-y'},
+        outputs={f"{path}\\{os.path.splitext(title)[0]}.mp3": '-ab 160k -ac 2 -ar 44100 -vn'}
+        )
+        ff.run()
+        
+        
+        
+        # command = "ffmpeg -y -i "+path+"/"+f'"{title}"'+" -ab 160k -ac 2 -ar 44100 -vn "+path+f'/"{os.path.splitext(title)[0]}"'+".mp3"
     
-        subprocess.call(command, shell=True)
+        # subprocess.call(command, shell=True)
         os.remove(os.path.join(path, title))
 
         self.statusbar.showMessage(f"[downloaded] {os.path.splitext(title)[0]}")
