@@ -91,20 +91,19 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
         self.setupUi(self)
 
 
-        self.startBtn.clicked.connect(self.startDownload)
-        self.download_folderBtn.clicked.connect(self.openDownloadFolder)
+        self.startBtn.clicked.connect(self.start_download)
+        self.download_folderBtn.clicked.connect(self.open_download_folder)
 
-    def showWindow(self):
+    def show_window(self):
         self.youtube_link.setText("")
         self.show()
 
-    def openDownloadFolder(self):
+    def open_download_folder(self):
         downloadFolderName = QFileDialog.getExistingDirectory(
             self, "open folder", "c:\\")
         self.download_folder.setText(downloadFolderName)
 
-    def startDownload(self):  
-        
+    def start_download(self):  
         YTlink = self.youtube_link.text()
 
         if self.download_folder.text() != "":
@@ -151,8 +150,6 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
         else:
             self.statusbar.showMessage("[ERROR]:insert a valid url")
         
-        
-        
     def converter(self, path, title):
         ff = FFmpeg(
         executable=f"{libs_path}\\ffmpeg.exe",
@@ -169,8 +166,7 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
         os.remove(os.path.join(path, title))
 
         self.statusbar.showMessage(f"[downloaded] {os.path.splitext(title)[0]}")
-
-            
+   
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def __init__(self, parent=None):
@@ -197,10 +193,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.YouTubeToMP3 = YouTubeToMP3Window()
         
         # open YouTubeToMP3 using button
-        self.actionYT_MP3.triggered.connect(self.YouTubeToMP3.showWindow)
+        self.actionYT_MP3.triggered.connect(self.YouTubeToMP3.show_window)
 
         # info action
-        self.actionInfo.triggered.connect(self.infoHandle)
+        self.actionInfo.triggered.connect(self.info_handle)
 
         #===========================  mediaplayer  ==============================
         
@@ -246,7 +242,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
         # volumeBtn
-        self.volumeBtn.clicked.connect(self.volumeToggle)# mute/unmute volume pressing btn
+        self.volumeBtn.clicked.connect(self.volume_toggle)# mute/unmute volume pressing btn
         self.isMuted = False# starting with a non-muted volume
         self.previousVolume = self.data['volume']# loading last registered volume
 
@@ -255,7 +251,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mediaPlayer.durationChanged.connect(self.duration_changed)# set range of duration slider
         self.mediaPlayer.positionChanged.connect(self.position_changed)# duration slider progress
         self.mediaPlayer.stateChanged.connect(self.player_state)# see when it's playing or in pause 
-        self.mediaPlayer.volumeChanged.connect(self.volumeIcon)# change volumebtn icon
+        self.mediaPlayer.volumeChanged.connect(self.volume_icon)# change volumebtn icon
 
         #===========================  playlist  ==============================
         
@@ -282,20 +278,20 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
         # add song name on title
-        self.playlist.currentMediaChanged.connect(self.setTitle)
+        self.playlist.currentMediaChanged.connect(self.set_title)
         
         
         # playlist buttons
-        self.nextBtn.clicked.connect(self.playlist.next)# seek track forward
+        self.nextBtn.clicked.connect(self.next_song)# seek track forward
 
-        self.prevBtn.clicked.connect(self.playlist.previous)# seek track backward
+        self.prevBtn.clicked.connect(self.prev_song)# seek track backward
 
-        self.mediaPlayer.mediaStatusChanged.connect(self.autoNextTrack)# once song is ended seek track forward and play it
+        self.mediaPlayer.mediaStatusChanged.connect(self.auto_next_track)# once song is ended seek track forward and play it
                                                                          
 
-        self.actionLoopIt.triggered.connect(self.loopSong)# (1) loop the same song
+        self.actionLoopIt.triggered.connect(self.loop_song)# (1) loop the same song
 
-        self.actionShuffle.triggered.connect(self.shufflePlaylist)# change song's order
+        self.actionShuffle.triggered.connect(self.shuffle_playlist)# change song's order
 
         self.loopBtn.clicked.connect(self.loop)# (3) loop the playlist  
         
@@ -319,6 +315,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if len(self.data['playlistList']) == 0:
             self.menuPlaylist.menuAction().setVisible(False)
 
+
+    
 #================== Songs opening ==================#
     
     def open_folder(self):
@@ -343,7 +341,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.isCustomPlaylist = False
 
             self.model.layoutChanged.emit()# load songs in list view
-            self.setTitle()
+            self.set_title()
 
             self.mediaPlayer.pause()# adjust play/pause icon
 
@@ -365,7 +363,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.isCustomPlaylist = False
 
             self.model.layoutChanged.emit()# load song in list view
-            self.setTitle()
+            self.set_title()
             
             # adjust play/pause icon
             if self.playlist.mediaCount() == 1:# if there is 1 song and you add another 
@@ -402,7 +400,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # adjust play/pause icon
         self.mediaPlayer.pause()
   
-    def setTitle(self):
+    def set_title(self):
         if self.playlist.mediaCount() == 0:
             self.setWindowTitle("Sputofy")
         
@@ -522,7 +520,19 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 #================== Playback Settings ==================#    
     
-    def loopSong(self):
+    def next_song(self):
+        if self.playlist.currentIndex() == self.playlist.mediaCount()-1:
+            self.playlist.setCurrentIndex(0)
+        else:
+            self.playlist.next()
+    
+    def prev_song(self):
+        if self.playlist.currentIndex() == 0:
+            self.playlist.setCurrentIndex(self.playlist.mediaCount()-1)
+        else:
+            self.playlist.previous()
+
+    def loop_song(self):
         if self.playlist.playbackMode() != 1:
 
             self.playlist.setPlaybackMode(1)
@@ -534,7 +544,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.playlist.setPlaybackMode(2)
             self.actionLoopIt.setText("Loop it: OFF")
     
-    def shufflePlaylist(self):
+    def shuffle_playlist(self):
         if  not self.playlist.mediaCount() == 0:
             self.playlist.shuffle()
             self.model.layoutChanged.emit()
@@ -565,7 +575,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.playlist.setPlaybackMode(2)
             self.randomBtn.setIcon(QIcon(os.path.join(res_path, "randomIconOFF.svg")))
             
-    def autoNextTrack(self):
+    def auto_next_track(self):
         
         if self.mediaPlayer.mediaStatus() == QMediaPlayer.EndOfMedia:
             if self.playlist.playbackMode() == 2:
@@ -592,7 +602,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 #================== Volume Settings ==================#     
     
-    def volumeIcon(self, volume):
+    def volume_icon(self, volume):
 
         self.volumeLabel.setText(f"{volume}%")
 
@@ -608,7 +618,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.volumeBtn.setIcon(volumeMutedIcon)
             self.isMuted = True
     
-    def volumeToggle(self):
+    def volume_toggle(self):
         if self.isMuted == False:
             self.volumeSlider.setValue(0)
             self.isMuted = True
@@ -664,7 +674,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         yaml_dump(self.data)
 
-    def infoHandle(self):
+    def info_handle(self):
         # info = "©2020\na_str0\n\n"
         info = "Sputofy\n1.0.0\n©2020"+\
         "Sputofy is a free audio player based on the converted youtube songs made by a_str0\n\n"+\
