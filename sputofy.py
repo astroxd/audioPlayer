@@ -1,21 +1,17 @@
 ## !/usr/bin/env python
-import ffmpy
-from ffmpy import FFmpeg
-
 
 
 import os
 import random
 import sys
 import re
-
-from functools import partial
-
 import yaml
 
 from pytube import YouTube, Playlist
-import subprocess
+import ffmpy
+from ffmpy import FFmpeg
 
+from functools import partial
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QAbstractListModel, Qt, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QColor, QCursor
@@ -28,7 +24,13 @@ from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QStyle,
 
 from libs.YouTube_to_MP3.YouTube_to_MP3Window import Ui_Dialog
 from libs.SputofyGui.SputofyGui import Ui_MainWindow
-from libs.paths import *
+# from libs.paths import *
+
+base_path = os.path.dirname(os.path.abspath(__file__))
+res_path = f"{base_path}\\res"
+libs_path = f"{base_path}\\libs"
+
+
 
 
 
@@ -157,12 +159,7 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
         outputs={f"{path}\\{os.path.splitext(title)[0]}.mp3": '-ab 160k -ac 2 -ar 44100 -vn'}
         )
         ff.run()
-        
-        
-        
-        # command = "ffmpeg -y -i "+path+"/"+f'"{title}"'+" -ab 160k -ac 2 -ar 44100 -vn "+path+f'/"{os.path.splitext(title)[0]}"'+".mp3"
-    
-        # subprocess.call(command, shell=True)
+
         os.remove(os.path.join(path, title))
 
         self.statusbar.showMessage(f"[downloaded] {os.path.splitext(title)[0]}")
@@ -178,8 +175,30 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # load ui
         self.setupUi(self)
         
+        # load icons
         self.setWindowTitle("Sputofy")
         self.setWindowIcon(QIcon(os.path.join(res_path, "logo.svg")))
+
+        loopIcon = QIcon()
+        loopIcon.addPixmap(QPixmap(os.path.join(res_path, "loopIconOFF.svg")))
+        self.loopBtn.setIcon(loopIcon)
+        prevIcon = QIcon()
+        prevIcon.addPixmap(QPixmap(os.path.join(res_path, "backwardIcon.svg")))
+        self.prevBtn.setIcon(prevIcon)
+        playIcon = QIcon()
+        playIcon.addPixmap(QPixmap(os.path.join(res_path, "playIcon.svg")))
+        self.playBtn.setIcon(playIcon)
+        nextIcon = QIcon()
+        nextIcon.addPixmap(QPixmap(os.path.join(res_path, "forwardIcon.svg")))
+        self.nextBtn.setIcon(nextIcon)
+        randomIcon = QIcon()
+        randomIcon.addPixmap(QPixmap(os.path.join(res_path, "randomIconOFF.svg")))
+        self.randomBtn.setIcon(randomIcon)
+        volumeIcon = QIcon()
+        volumeIcon.addPixmap(QPixmap(os.path.join(res_path, "volumeIcon.svg")))
+        self.volumeBtn.setIcon(volumeIcon)
+
+
 
         # window's settings
         self.xCor = self.data['last_position']['xPos']
@@ -283,6 +302,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # playlist buttons
         self.nextBtn.clicked.connect(self.next_song)# seek track forward
+        # self.nextBtn.clicked.connect(self.playlist.next)# seek track forward
 
         self.prevBtn.clicked.connect(self.prev_song)# seek track backward
 
@@ -316,7 +336,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.menuPlaylist.menuAction().setVisible(False)
 
 
-    
 #================== Songs opening ==================#
     
     def open_folder(self):
@@ -392,7 +411,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.model.layoutChanged.emit()# load songs in list view
         
         self.currentPlaylist = playlistName# name of current loaded playlist
-        self.setTitle()
+        self.set_title()
         
         self.statusbar.showMessage(f'Playlist "{playlistName}" loaded', 4000)
         self.menuPlaylist.menuAction().setVisible(True)

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QStyle
 from PyQt5.QtGui import QIcon
 
 import sys, os
-from libs.paths import *
+# from libs.paths import *
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -23,41 +23,41 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         
         self.loopBtn = QtWidgets.QPushButton(self.centralwidget)
-        loopIcon = QtGui.QIcon()
-        loopIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "loopIconOFF.svg")))
-        self.loopBtn.setIcon(loopIcon)
+        # loopIcon = QtGui.QIcon()
+        # loopIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "loopIconOFF.svg")))
+        # self.loopBtn.setIcon(loopIcon)
         self.loopBtn.setObjectName("loopBtn")
         self.horizontalLayout.addWidget(self.loopBtn)
         
         
         self.prevBtn = QtWidgets.QPushButton(self.centralwidget)
-        prevIcon = QtGui.QIcon()
-        prevIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "backwardIcon.svg")))
-        self.prevBtn.setIcon(prevIcon)
+        # prevIcon = QtGui.QIcon()
+        # prevIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "backwardIcon.svg")))
+        # self.prevBtn.setIcon(prevIcon)
         self.prevBtn.setObjectName("prevBtn")
         self.horizontalLayout.addWidget(self.prevBtn)
         
         
         self.playBtn = QtWidgets.QPushButton(self.centralwidget)
-        playIcon = QtGui.QIcon()
-        playIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "playIcon.svg")))
-        self.playBtn.setIcon(playIcon)
+        # playIcon = QtGui.QIcon()
+        # playIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "playIcon.svg")))
+        # self.playBtn.setIcon(playIcon)
         self.playBtn.setObjectName("playBtn")
         self.horizontalLayout.addWidget(self.playBtn)
         
         
         self.nextBtn = QtWidgets.QPushButton(self.centralwidget)
-        nextIcon = QtGui.QIcon()
-        nextIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "forwardIcon.svg")))
-        self.nextBtn.setIcon(nextIcon)
+        # nextIcon = QtGui.QIcon()
+        # nextIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "forwardIcon.svg")))
+        # self.nextBtn.setIcon(nextIcon)
         self.nextBtn.setObjectName("nextBtn")
         self.horizontalLayout.addWidget(self.nextBtn)
         
         
         self.randomBtn = QtWidgets.QPushButton(self.centralwidget)
-        randomIcon = QtGui.QIcon()
-        randomIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "randomIconOFF.svg")))
-        self.randomBtn.setIcon(randomIcon)
+        # randomIcon = QtGui.QIcon()
+        # randomIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "randomIconOFF.svg")))
+        # self.randomBtn.setIcon(randomIcon)
         self.randomBtn.setObjectName("randomBtn")
         self.horizontalLayout.addWidget(self.randomBtn)
         
@@ -98,9 +98,9 @@ class Ui_MainWindow(object):
         
         
         self.volumeBtn = QtWidgets.QPushButton(self.centralwidget)
-        volumeIcon = QtGui.QIcon()
-        volumeIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "volumeIcon.svg")))
-        self.volumeBtn.setIcon(volumeIcon)
+        # volumeIcon = QtGui.QIcon()
+        # volumeIcon.addPixmap(QtGui.QPixmap(os.path.join(res_path, "volumeIcon.svg")))
+        # self.volumeBtn.setIcon(volumeIcon)
         self.volumeBtn.setObjectName("volumeBtn")
         self.horizontalLayout_3.addWidget(self.volumeBtn)
         
@@ -263,7 +263,7 @@ class Ui_MainWindow(object):
 
         self.actionDeletePlaylist.setText(_translate("MainWindow", "Delete Playlist"))
         self.actionDeletePlaylist.setToolTip(_translate("MainWindow", "Delete current playlist"))
-        self.actionDeletePlaylist.setShortcut(_translate("MainWindow", "Ctrl+D"))
+        # self.actionDeletePlaylist.setShortcut(_translate("MainWindow", "Ctrl+D"))# too dangerous
 
         self.actionClearQueue.setText(_translate("MainWindow", "Clear Queue"))
         self.actionClearQueue.setToolTip(_translate("MainWindow", "Remove all songs"))
