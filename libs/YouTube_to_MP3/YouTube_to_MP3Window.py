@@ -16,9 +16,6 @@ class Ui_Dialog(object):
         Dialog.setObjectName("Dialog")
         Dialog.resize(399, 129)
         
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("E:/Google Drive/coding/Python/Esercizi/audioplayer/audioPlayer/res/logo.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        Dialog.setWindowIcon(icon)
         Dialog.setStyleSheet("border-bottom:0")
         
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
@@ -61,8 +58,6 @@ class Ui_Dialog(object):
 
         self.verticalLayout.addLayout(self.gridLayout)
 
-        
-
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -78,6 +73,7 @@ class Ui_Dialog(object):
         self.startBtn.setText(_translate("Dialog", "Start"))
         self.startBtn.setShortcut(_translate("Dialog", "Return"))
         self.startBtn.setToolTip(_translate("Dialog", "Start conversion"))
+
 
 
 # if __name__ == "__main__":

@@ -5,11 +5,13 @@ import os
 import random
 import sys
 import re
+import subprocess
 import yaml
 
 from pytube import YouTube, Playlist
 import ffmpy
 from ffmpy import FFmpeg
+
 
 from functools import partial
 from PyQt5 import QtCore, QtWidgets
@@ -91,6 +93,7 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QIcon(os.path.join(res_path, "logo.svg")))
 
 
         self.startBtn.clicked.connect(self.start_download)
@@ -98,6 +101,7 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
 
     def show_window(self):
         self.youtube_link.setText("")
+        self.statusbar.showMessage("")
         self.show()
 
     def open_download_folder(self):
@@ -116,12 +120,12 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
                 os.makedirs(download_folder)
             except:
                 download_folder = yaml_loader()['default_folder']
-                print(f"\x1b[1;34;40mfolder already existing : {download_folder}\x1b[0;37;40m")
+                # print(f"\x1b[1;34;40mfolder already existing : {download_folder}\x1b[0;37;40m")
         
 
         if YTlink:
             try:
-                self.statusbar.showMessage("Downloading...")
+                # self.statusbar.showMessage("Downloading...")
                 
                 if "playlist" in YTlink:
                     playlist = Playlist(YTlink)
@@ -153,17 +157,22 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
             self.statusbar.showMessage("[ERROR]:insert a valid url")
         
     def converter(self, path, title):
-        ff = FFmpeg(
-        executable=f"{libs_path}\\ffmpeg.exe",
-        inputs={f"{path}\\{title}": '-y'},
-        outputs={f"{path}\\{os.path.splitext(title)[0]}.mp3": '-ab 160k -ac 2 -ar 44100 -vn'}
-        )
-        ff.run()
+        # ff = FFmpeg(
+        # executable=f"{libs_path}\\ffmpeg.exe",
+        # inputs={f"{path}\\{title}": '-y'},
+        # outputs={f"{path}\\{os.path.splitext(title)[0]}.mp3": '-ab 160k -ac 2 -ar 44100 -vn'}
+        # )
+        # ff.run()
+        # command = "ffmpeg -y -i "+path+"/"+f'"{title}"'+" -ab 160k -ac 2 -ar 44100 -vn "+path+f'/"{os.path.splitext(title)[0]}"'+".mp3"
+        command = f'ffmpeg -y -i {path}/"{title}" -ab 160k -ac 2 -ar 44100 -vn {path}/"{os.path.splitext(title)[0]}".mp3'
+
+        subprocess.call(command, shell=True)
 
         os.remove(os.path.join(path, title))
 
         self.statusbar.showMessage(f"[downloaded] {os.path.splitext(title)[0]}")
-   
+
+
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def __init__(self, parent=None):
