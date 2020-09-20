@@ -46,3 +46,7 @@ There is also a config system that saves **player’s volume**, **user's playlis
 
 # Video
 For the code explanation [click me](https://youtu.be/YXdOUmxG5yI)
+
+# Future Project
+ > Adding conversion from Spotify playlist
+ > Rename playlist
