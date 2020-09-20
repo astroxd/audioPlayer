@@ -45,7 +45,7 @@ There is also a config system that saves **player’s volume**, **user's playlis
 ![config](https://i.imgur.com/mbr2nnl.png)
 
 # Video
-For the code explanation [click me](https://youtu.be/YXdOUmxG5yI)
+For the code explanation [click me](https://youtu.be/YXdOUmxG5y)
 
 # Future Project
  - Adding conversion from Spotify playlist
