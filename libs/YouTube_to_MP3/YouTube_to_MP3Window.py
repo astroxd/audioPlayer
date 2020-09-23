@@ -10,7 +10,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -55,7 +54,6 @@ class Ui_Dialog(object):
         self.statusbar.setObjectName("statusbar")
         self.gridLayout.addWidget(self.statusbar, 3, 0, 1, 1)
     
-
         self.verticalLayout.addLayout(self.gridLayout)
 
         self.retranslateUi(Dialog)

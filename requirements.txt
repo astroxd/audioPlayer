@@ -1,4 +1,3 @@
-ffmpy==0.2.3
 pytube3==9.6.4
 PyQt5==5.15.1
 PyYAML==5.3.1
