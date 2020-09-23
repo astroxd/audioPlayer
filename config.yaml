@@ -1,4 +1,4 @@
-default_folder: ''
+default_folder: C:\Users\andre\Desktop\sputofy_songs
 last_position:
   xPos: 114
   yPos: 190
@@ -6,4 +6,4 @@ last_window_size:
   height: 476
   width: 859
 playlistList: {}
-volume: 100
+volume: 1

@@ -5,7 +5,7 @@
 Sputofy is a free audio player based on the converted youtube song
 It works with mp3 files and has a built-in youtube to mp3 converter that works using ffmpeg
 
-{video}
+![YouTube2Mp3](https://media.giphy.com/media/TTRfsr69nYAfbyQTys/giphy.gif)
 
 Once you have converted your songs you can open them using the button il file menu
 
@@ -17,11 +17,12 @@ There are a bunch of functionalities like loop mode, random mode, shuffle mode
 
 You can also create custom playlist based on the current songs’s paths 
 
-{video}
+![create playlist](https://media.giphy.com/media/jZaqJlcdExa9sutPYq/giphy.gif)
 
 And obviously you can delete it
 
-{video}
+![delete playlist](https://media.giphy.com/media/shv0pAwRMZ3EJZzvg3/giphy.gif)
+
 # Shortcuts
 You can manage the player using shotcuts:
   - **Space bar**: play/pause song

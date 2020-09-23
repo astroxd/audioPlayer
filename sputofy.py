@@ -7,6 +7,7 @@ import sys
 import re
 import subprocess
 import yaml
+from threading import Thread
 
 from pytube import YouTube, Playlist
 import ffmpy
@@ -94,20 +95,26 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
         super().__init__()
         self.setupUi(self)
         self.setWindowIcon(QIcon(os.path.join(res_path, "logo.svg")))
+        
+        self.data = yaml_loader()
 
 
-        self.startBtn.clicked.connect(self.start_download)
+        self.startBtn.clicked.connect(self.start_downloadThread)
         self.download_folderBtn.clicked.connect(self.open_download_folder)
 
     def show_window(self):
         self.youtube_link.setText("")
-        self.statusbar.showMessage("")
+        self.statusbar.showMessage(f"default download folder: {self.data['default_folder']}")
         self.show()
 
     def open_download_folder(self):
         downloadFolderName = QFileDialog.getExistingDirectory(
             self, "open folder", "c:\\")
         self.download_folder.setText(downloadFolderName)
+
+    def start_downloadThread(self):
+        thread = Thread(target=self.start_download)
+        thread.start()
 
     def start_download(self):  
         YTlink = self.youtube_link.text()
@@ -116,16 +123,16 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
             download_folder = self.download_folder.text()
         else:
             try:
-                download_folder = yaml_loader()['default_folder']
+                download_folder = self.data['default_folder']
                 os.makedirs(download_folder)
             except:
-                download_folder = yaml_loader()['default_folder']
+                download_folder = self.data['default_folder']
                 # print(f"\x1b[1;34;40mfolder already existing : {download_folder}\x1b[0;37;40m")
         
 
         if YTlink:
             try:
-                # self.statusbar.showMessage("Downloading...")
+                self.statusbar.showMessage("Downloading...")
                 
                 if "playlist" in YTlink:
                     playlist = Playlist(YTlink)
