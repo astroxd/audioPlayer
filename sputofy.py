@@ -143,7 +143,9 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
 
     def converter(self, path, title):
         command = f'ffmpeg -y -i {path}/"{title}" -ab 160k -ac 2 -ar 44100 -vn {path}/"{os.path.splitext(title)[0]}".mp3'
-        subprocess.call(command, shell=True)
+        process = subprocess.run(command, shell=True, stderr=subprocess.PIPE, universal_newlines=True)
+
+        print(str(process.stderr))
 
         os.remove(os.path.join(path, title))
 
