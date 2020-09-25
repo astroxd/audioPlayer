@@ -7,6 +7,7 @@ import subprocess
 import sys
 from functools import partial
 from threading import Thread
+import time
 
 import yaml
 from PyQt5 import QtCore, QtWidgets
@@ -23,6 +24,7 @@ from pytube import Playlist, YouTube
 
 from libs.SputofyGui.SputofyGui import Ui_MainWindow
 from libs.YouTube_to_MP3.YouTube_to_MP3Window import Ui_Dialog
+from libs.Logger.Logger import Logger
 
 # PATHs
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -75,6 +77,7 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
         super().__init__()
         self.setupUi(self)
         self.setWindowIcon(QIcon(os.path.join(RES_PATH, "logo.svg")))
+        self.setWindowModality(Qt.ApplicationModal)
         
         self.data = yaml_loader()
 
@@ -143,10 +146,10 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
 
     def converter(self, path, title):
         command = f'ffmpeg -y -i {path}/"{title}" -ab 160k -ac 2 -ar 44100 -vn {path}/"{os.path.splitext(title)[0]}".mp3'
-        process = subprocess.run(command, shell=True, stderr=subprocess.PIPE, universal_newlines=True)
+        process = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
 
-        print(str(process.stderr))
-
+        print((process.stderr).decode('UTF-8'))
+        
         os.remove(os.path.join(path, title))
 
         self.statusbar.showMessage(f"[downloaded] {os.path.splitext(title)[0]}")
@@ -680,6 +683,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     
 
 if __name__ == "__main__":
+
+    sys.stdout = Logger()
+
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
 
