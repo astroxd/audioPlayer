@@ -30,6 +30,7 @@ from libs.Logger.Logger import Logger
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 RES_PATH = f"{BASE_PATH}\\res"
 LIBS_PATH = f"{BASE_PATH}\\libs"
+LOG_PATH = f"{BASE_PATH}\\logs"
 
 def time_format(seconds): 
     ''' format seconds into hh:mm:ss '''
@@ -684,7 +685,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 if __name__ == "__main__":
 
-    sys.stdout = Logger()
+    sys.stdout = Logger(LOG_PATH)
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
