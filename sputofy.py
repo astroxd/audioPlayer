@@ -112,26 +112,30 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
                 download_folder = self.data['default_folder']
 
         YTlink = self.youtube_link.text()
-
         if YTlink:
             try:
-                self.statusbar.showMessage("Downloading...")
-                
+                            
                 if "playlist" in YTlink:
                     playlist = Playlist(YTlink)
                     playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
                     playlist_title = playlist.title()
+                    playlist_songIndex = 1
 
                     for video in playlist.videos:
+
+                        self.statusbar.showMessage(f"[{playlist_songIndex}/{len(playlist.video_urls)}] Downloading...")
                         song = video.streams.filter(only_audio=True).first()
 
                         song.download(download_folder)
                         song_title = song.default_filename
 
                         self.converter(download_folder, song_title)
+                        playlist_songIndex+=1
                     self.statusbar.showMessage(f"[downloaded] {playlist_title}")
                 
                 else:
+                    self.statusbar.showMessage("Downloading...")
+
                     yt = YouTube(YTlink)
                     song = yt.streams.filter(only_audio=True).first()
 
@@ -145,12 +149,20 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
                 print(e)
         else:
             self.statusbar.showMessage("[ERROR]:insert a valid url")
-     
+    
+   
+
     def start_downloadThread(self):
         thread = Thread(target=self.start_download_thread_function)
         thread.start()
 
+
+    # def converterThread(self, path, title):
+    #     thread = Thread(target=self.converter(path, title))
+    #     thread.start()
+
     def converter(self, path, title):
+        # self.statusbar.showMessage("converting")
         command = f'ffmpeg -y -i {path}/"{title}" -ab 160k -ac 2 -ar 44100 -vn {path}/"{os.path.splitext(title)[0]}".mp3'
         process = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
