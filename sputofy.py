@@ -86,6 +86,11 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
         self.download_folderBtn.clicked.connect(self.open_download_folder)
 
     def show_window(self):
+        user = os.getlogin()
+        self.data['default_folder'] = f"C:\\Users\\{user}\\Desktop\\sputofy_songs"
+
+        yaml_dump(self.data)
+        
         self.youtube_link.setText("")
         self.statusbar.showMessage(f"default download folder: {self.data['default_folder']}")
         self.show()
@@ -147,7 +152,7 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
 
     def converter(self, path, title):
         command = f'ffmpeg -y -i {path}/"{title}" -ab 160k -ac 2 -ar 44100 -vn {path}/"{os.path.splitext(title)[0]}".mp3'
-        process = subprocess.run(command, shell=True, stderr=subprocess.PIPE)
+        process = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
         print((process.stderr).decode('UTF-8'))
         
