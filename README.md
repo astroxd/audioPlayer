@@ -1,7 +1,5 @@
 # Sputofy
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
-
 Sputofy is a free audio player based on the converted youtube song
 It works with mp3 files and has a built-in youtube to mp3 converter that works using ffmpeg
 
