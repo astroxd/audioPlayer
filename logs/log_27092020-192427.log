@@ -1,117 +1,0 @@
-ffmpeg version git-2020-08-31-4a11a6f Copyright (c) 2000-2020 the FFmpeg developers
-  built with gcc 10.2.1 (GCC) 20200805
-  configuration: --enable-gpl --enable-version3 --enable-sdl2 --enable-fontconfig --enable-gnutls --enable-iconv --enable-libass --enable-libdav1d --enable-libbluray --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libtheora --enable-libtwolame --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libzimg --enable-lzma --enable-zlib --enable-gmp --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvo-amrwbenc --enable-libmysofa --enable-libspeex --enable-libxvid --enable-libaom --enable-libgsm --enable-librav1e --enable-libsvtav1 --disable-w32threads --enable-libmfx --enable-ffnvcodec --enable-cuda-llvm --enable-cuvid --enable-d3d11va --enable-nvenc --enable-nvdec --enable-dxva2 --enable-avisynth --enable-libopenmpt --enable-amf
-  libavutil      56. 58.100 / 56. 58.100
-  libavcodec     58.101.101 / 58.101.101
-  libavformat    58. 51.101 / 58. 51.101
-  libavdevice    58. 11.101 / 58. 11.101
-  libavfilter     7. 87.100 /  7. 87.100
-  libswscale      5.  8.100 /  5.  8.100
-  libswresample   3.  8.100 /  3.  8.100
-  libpostproc    55.  8.100 / 55.  8.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'C:\Users\andre\Desktop\sputofy_songs/Anata no Eranda Kono Toki wo - Kanako Itō - SteinsGate fuka ryōiki no déjà vu Opening.mp4':
-  Metadata:
-    major_brand     : dash
-    minor_version   : 0
-    compatible_brands: iso6mp41
-    creation_time   : 2019-05-03T20:41:59.000000Z
-  Duration: 00:05:09.06, start: 0.000000, bitrate: 129 kb/s
-    Stream #0:0(eng): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 4 kb/s (default)
-    Metadata:
-      creation_time   : 2019-05-03T20:41:59.000000Z
-      handler_name    : ISO Media file produced by Google Inc. Created on: 05/03/2019.
-Stream mapping:
-  Stream #0:0 -> #0:0 (aac (native) -> mp3 (libmp3lame))
-Press [q] to stop, [?] for help
-Output #0, mp3, to 'C:\Users\andre\Desktop\sputofy_songs/Anata no Eranda Kono Toki wo - Kanako Itō - SteinsGate fuka ryōiki no déjà vu Opening.mp3':
-  Metadata:
-    major_brand     : dash
-    minor_version   : 0
-    compatible_brands: iso6mp41
-    TSSE            : Lavf58.51.101
-    Stream #0:0(eng): Audio: mp3 (libmp3lame), 44100 Hz, stereo, fltp, 160 kb/s (default)
-    Metadata:
-      creation_time   : 2019-05-03T20:41:59.000000Z
-      handler_name    : ISO Media file produced by Google Inc. Created on: 05/03/2019.
-      encoder         : Lavc58.101.101 libmp3lame
-size=     512kB time=00:00:29.88 bitrate= 140.3kbits/s speed=59.7x    size=    1024kB time=00:00:58.61 bitrate= 143.1kbits/s speed=58.6x    size=    1536kB time=00:01:27.79 bitrate= 143.3kbits/s speed=58.5x    size=    2048kB time=00:01:56.92 bitrate= 143.5kbits/s speed=58.4x    size=    2816kB time=00:02:27.61 bitrate= 156.3kbits/s speed=  59x    size=    3328kB time=00:02:57.00 bitrate= 154.0kbits/s speed=  59x    size=    3840kB time=00:03:26.29 bitrate= 152.5kbits/s speed=58.9x    size=    4352kB time=00:03:55.83 bitrate= 151.2kbits/s speed=58.9x    size=    5120kB time=00:04:24.72 bitrate= 158.4kbits/s speed=58.8x    size=    5632kB time=00:04:55.05 bitrate= 156.4kbits/s speed=  59x    size=    6038kB time=00:05:09.08 bitrate= 160.0kbits/s speed=59.3x    
-video:0kB audio:6037kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.010676%
-
-ffmpeg version git-2020-08-31-4a11a6f Copyright (c) 2000-2020 the FFmpeg developers
-  built with gcc 10.2.1 (GCC) 20200805
-  configuration: --enable-gpl --enable-version3 --enable-sdl2 --enable-fontconfig --enable-gnutls --enable-iconv --enable-libass --enable-libdav1d --enable-libbluray --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libtheora --enable-libtwolame --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libzimg --enable-lzma --enable-zlib --enable-gmp --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvo-amrwbenc --enable-libmysofa --enable-libspeex --enable-libxvid --enable-libaom --enable-libgsm --enable-librav1e --enable-libsvtav1 --disable-w32threads --enable-libmfx --enable-ffnvcodec --enable-cuda-llvm --enable-cuvid --enable-d3d11va --enable-nvenc --enable-nvdec --enable-dxva2 --enable-avisynth --enable-libopenmpt --enable-amf
-  libavutil      56. 58.100 / 56. 58.100
-  libavcodec     58.101.101 / 58.101.101
-  libavformat    58. 51.101 / 58. 51.101
-  libavdevice    58. 11.101 / 58. 11.101
-  libavfilter     7. 87.100 /  7. 87.100
-  libswscale      5.  8.100 /  5.  8.100
-  libswresample   3.  8.100 /  3.  8.100
-  libpostproc    55.  8.100 / 55.  8.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'C:\Users\andre\Desktop\sputofy_songs/kenzen robo daimidaler opening full.mp4':
-  Metadata:
-    major_brand     : dash
-    minor_version   : 0
-    compatible_brands: iso6mp41
-    creation_time   : 2018-10-30T08:20:11.000000Z
-  Duration: 00:03:58.72, start: 0.000000, bitrate: 127 kb/s
-    Stream #0:0(spa): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 5 kb/s (default)
-    Metadata:
-      creation_time   : 2018-10-30T08:20:11.000000Z
-      handler_name    : SoundHandler
-Stream mapping:
-  Stream #0:0 -> #0:0 (aac (native) -> mp3 (libmp3lame))
-Press [q] to stop, [?] for help
-Output #0, mp3, to 'C:\Users\andre\Desktop\sputofy_songs/kenzen robo daimidaler opening full.mp3':
-  Metadata:
-    major_brand     : dash
-    minor_version   : 0
-    compatible_brands: iso6mp41
-    TSSE            : Lavf58.51.101
-    Stream #0:0(spa): Audio: mp3 (libmp3lame), 44100 Hz, stereo, fltp, 160 kb/s (default)
-    Metadata:
-      creation_time   : 2018-10-30T08:20:11.000000Z
-      handler_name    : SoundHandler
-      encoder         : Lavc58.101.101 libmp3lame
-size=     512kB time=00:00:32.02 bitrate= 131.0kbits/s speed=64.1x    size=    1024kB time=00:01:02.14 bitrate= 135.0kbits/s speed=62.1x    size=    1792kB time=00:01:34.35 bitrate= 155.6kbits/s speed=62.9x    size=    2304kB time=00:02:06.22 bitrate= 149.5kbits/s speed=63.1x    size=    3072kB time=00:02:38.48 bitrate= 158.8kbits/s speed=63.4x    size=    3584kB time=00:03:10.40 bitrate= 154.2kbits/s speed=63.5x    size=    4096kB time=00:03:41.54 bitrate= 151.5kbits/s speed=63.3x    size=    4664kB time=00:03:58.73 bitrate= 160.0kbits/s speed=  64x    
-video:0kB audio:4663kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.013821%
-
-ffmpeg version git-2020-08-31-4a11a6f Copyright (c) 2000-2020 the FFmpeg developers
-  built with gcc 10.2.1 (GCC) 20200805
-  configuration: --enable-gpl --enable-version3 --enable-sdl2 --enable-fontconfig --enable-gnutls --enable-iconv --enable-libass --enable-libdav1d --enable-libbluray --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libtheora --enable-libtwolame --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libzimg --enable-lzma --enable-zlib --enable-gmp --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvo-amrwbenc --enable-libmysofa --enable-libspeex --enable-libxvid --enable-libaom --enable-libgsm --enable-librav1e --enable-libsvtav1 --disable-w32threads --enable-libmfx --enable-ffnvcodec --enable-cuda-llvm --enable-cuvid --enable-d3d11va --enable-nvenc --enable-nvdec --enable-dxva2 --enable-avisynth --enable-libopenmpt --enable-amf
-  libavutil      56. 58.100 / 56. 58.100
-  libavcodec     58.101.101 / 58.101.101
-  libavformat    58. 51.101 / 58. 51.101
-  libavdevice    58. 11.101 / 58. 11.101
-  libavfilter     7. 87.100 /  7. 87.100
-  libswscale      5.  8.100 /  5.  8.100
-  libswresample   3.  8.100 /  3.  8.100
-  libpostproc    55.  8.100 / 55.  8.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'C:\Users\andre\Desktop\sputofy_songs/Death Parade – Opening Theme – Flyers.mp4':
-  Metadata:
-    major_brand     : dash
-    minor_version   : 0
-    compatible_brands: iso6mp41
-    creation_time   : 2020-05-04T17:05:03.000000Z
-  Duration: 00:01:19.90, start: 0.000000, bitrate: 129 kb/s
-    Stream #0:0(und): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 16 kb/s (default)
-    Metadata:
-      creation_time   : 2020-05-04T17:05:03.000000Z
-      handler_name    : ISO Media file produced by Google Inc.
-Stream mapping:
-  Stream #0:0 -> #0:0 (aac (native) -> mp3 (libmp3lame))
-Press [q] to stop, [?] for help
-Output #0, mp3, to 'C:\Users\andre\Desktop\sputofy_songs/Death Parade – Opening Theme – Flyers.mp3':
-  Metadata:
-    major_brand     : dash
-    minor_version   : 0
-    compatible_brands: iso6mp41
-    TSSE            : Lavf58.51.101
-    Stream #0:0(und): Audio: mp3 (libmp3lame), 44100 Hz, stereo, fltp, 160 kb/s (default)
-    Metadata:
-      creation_time   : 2020-05-04T17:05:03.000000Z
-      handler_name    : ISO Media file produced by Google Inc.
-      encoder         : Lavc58.101.101 libmp3lame
-size=     512kB time=00:00:28.03 bitrate= 149.6kbits/s speed=  56x    size=    1024kB time=00:00:55.17 bitrate= 152.0kbits/s speed=55.1x    size=    1562kB time=00:01:19.90 bitrate= 160.1kbits/s speed=56.7x    
-video:0kB audio:1561kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.041284%
-

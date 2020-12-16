@@ -118,9 +118,9 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
                 if "playlist" in YTlink:
                     playlist = Playlist(YTlink)
                     playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
-                    playlist_title = playlist.title()
+                    # playlist_title = playlist.title()#TODO not supported method "str object is not callable"
+                    playlist_title = "playlist"
                     playlist_songIndex = 1
-
                     for video in playlist.videos:
 
                         self.statusbar.showMessage(f"[{playlist_songIndex}/{len(playlist.video_urls)}] Downloading...")
@@ -163,7 +163,7 @@ class YouTubeToMP3Window(QtWidgets.QWidget, Ui_Dialog):
 
     def converter(self, path, title):
         # self.statusbar.showMessage("converting")
-        command = f'ffmpeg -y -i {path}/"{title}" -ab 160k -ac 2 -ar 44100 -vn {path}/"{os.path.splitext(title)[0]}".mp3'
+        command = f'ffmpeg -n -i {path}/"{title}" -ab 160k -ac 2 -ar 44100 -vn {path}/"{os.path.splitext(title)[0]}".mp3'
         process = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
         print((process.stderr).decode('UTF-8'))

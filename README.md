@@ -49,3 +49,4 @@ For the code explanation [click me](https://youtu.be/YXdOUmxG5y)
 # Future Project
  - Adding conversion from Spotify playlist
  - Rename playlist
+ - Parallel playlist's songs download (good connection)
